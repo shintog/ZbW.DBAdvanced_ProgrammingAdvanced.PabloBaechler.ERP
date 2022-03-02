@@ -1,11 +1,13 @@
-﻿<Window x:Class="ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.AddressWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views"
-        mc:Ignorable="d"
-        Title="AddressWindow" Height="450" Width="800" WindowStyle="None">
+﻿<Page x:Class="ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages.AddressPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="AddressPage">
+
     <Grid x:Name="grdAddressData">
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -41,5 +43,5 @@
         <TextBox x:Name="txtZIP" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="6" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <Label x:Name="lblCity" Content="Ort:" Grid.Column="5" HorizontalAlignment="Left" Grid.Row="6" VerticalAlignment="Top" Width="80"/>
         <TextBox x:Name="txtCity" Grid.Column="6" HorizontalAlignment="Left" Height="25" Grid.Row="6" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-</Grid>
-</Window>
+    </Grid>
+</Page>

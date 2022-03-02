@@ -12,32 +12,32 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Support;
+using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels;
 
-namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views
+namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ApplicationPage.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ApplicationPage : Page
     {
         public object BindingContext { get; set; }
-        public MainWindow()
+
+        public ApplicationPage()
         {
             InitializeComponent();
-            BindingContext = new MainViewModel();
+            BindingContext = ((MainViewModel)((MainWindow)App.Current.MainWindow).BindingContext).ApplicationViewModel; 
             SetBindings();
         }
 
         public void SetBindings()
         {
-            //Frame Pages -> Aktuelle Page setzen
-            BindToElement("CurrentWindow", BindingMode.TwoWay, frmApplication, Frame.ContentProperty);
-            //ComboBox Appliaktionen -> Applikationsliste setzen
-            BindToElement("CurrentApplications", BindingMode.OneWay, cmbApplications, ComboBox.ItemsSourceProperty);
-            //ComboBox Applikationen -> Rückgabewert setzen
-            BindToElement("SelectedItem", BindingMode.OneWayToSource, cmbApplications, ComboBox.SelectedItemProperty);
+            //ListView Applikationsliste setzen
+            BindToElement("CurrentApplications", BindingMode.OneWay, lsvApplications, ListView.ItemsSourceProperty);
+
+            //ListView Rückgabewert setzen
+            BindToElement("SelectedItem", BindingMode.OneWayToSource, lsvApplications, ListView.SelectedItemProperty);
         }
 
         public void BindToElement(string path, BindingMode mode, DependencyObject element, DependencyProperty property)

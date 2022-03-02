@@ -1,0 +1,63 @@
+﻿<Page x:Class="ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages.ArticlePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="ArticlePage">
+    <Grid x:Name="grdArticleData">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="132*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="210"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="80"/>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="80"/>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="25"/>
+            <ColumnDefinition Width="100*"/>
+        </Grid.ColumnDefinitions>
+        <Frame x:Name="frmSearch" Grid.Row="0" Grid.Column="0" Grid.RowSpan="13"></Frame>
+
+        <Label x:Name="lblArticleNR" Content="Artikel-Nr.:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="txtArticleNr" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="2" TextWrapping="Wrap" Text="*Neu*" IsEnabled="False" VerticalAlignment="Top" Width="120"/>
+
+        <Label x:Name="lblName" Content="Name:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="4" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="txtName" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="4" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+
+        <Label x:Name="lblDesignation" Content="Bezeichnung:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="6" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="txtDesignation" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="6" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+
+        <Label x:Name="lblClassification" Content="Klassifikation:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="8" VerticalAlignment="Top" Width="80"/>
+        <ComboBox x:Name="cmbClassification" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="8" VerticalAlignment="Top" Width="120" IsEditable="True"/>
+        <TextBox x:Name="txtClassification" Grid.Column="5" HorizontalAlignment="Left" Height="25" Grid.Row="8" Grid.ColumnSpan="4" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="380" IsReadOnly="True"/>
+
+        <Label x:Name="lblPurchasingPrice" Content="Einkaufspreis:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="10" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="txtPurchasingPrice" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="10" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="lblPurchasingPriceCurrency" Content="Währung:" Grid.Column="5" HorizontalAlignment="Left" Grid.Row="10" VerticalAlignment="Top" Width="80"/>
+        <ComboBox x:Name="cmbPPCurrency" Grid.Column="6" HorizontalAlignment="Left" Grid.Row="10" VerticalAlignment="Top" Width="120" Height="25" IsEditable="True"/>
+
+        <Label x:Name="lblSalesPrice" Content="Verkaufspreis:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="12" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="txtSalesPrice" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="12" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="lblSalesCurrency" Content="Währung:" Grid.Column="5" HorizontalAlignment="Left" Grid.Row="12" VerticalAlignment="Top" Width="80"/>
+        <ComboBox x:Name="cmbSPCurrency" Grid.Column="6" HorizontalAlignment="Left" Grid.Row="12" VerticalAlignment="Top" Width="120" Height="25" IsEditable="True"/>
+
+    </Grid>
+</Page>
