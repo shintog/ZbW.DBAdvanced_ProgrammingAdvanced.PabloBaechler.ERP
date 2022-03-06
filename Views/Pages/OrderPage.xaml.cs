@@ -22,12 +22,11 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
     /// </summary>
     public partial class OrderPage : Page
     {
-        public object BindingContext { get; set; }
 
         public OrderPage()
         {
             InitializeComponent();
-            BindingContext = ((MainViewModel)((MainWindow)App.Current.MainWindow).BindingContext).OrderViewModel;
+            DataContext = ((MainViewModel)((MainWindow)App.Current.MainWindow).DataContext).OrderViewModel;
             SetBindings();
         }
 
@@ -42,17 +41,41 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             //Kunde setzen
             BindToElement("Customer", BindingMode.OneWay, cmbCustomer, ComboBox.ItemsSourceProperty);
             //Kunde ->  Selektierter Wert zurückgebenn
-            BindToElement("CustomerSelectedItem", BindingMode.OneWayToSource, cmbCustomer, ComboBox.SelectedItemProperty);
+            BindToElement("CustomerSelectedItem", BindingMode.TwoWay, cmbCustomer, ComboBox.SelectedItemProperty);
             //Kunde Wert setzen
             BindToElement("CustomerValue", BindingMode.OneWay, txtCustomer, TextBox.TextProperty);
-            //Positionen setzen
-            BindToElement("Positions", BindingMode.TwoWay, lsvPositions, ListView.ItemsSourceProperty);
+            //Positionen Liste setzen
+            BindToElement("Positions", BindingMode.OneWay, lsvPositions, ListView.ItemsSourceProperty);
+            //Positionen Liste ->  Selektierter Wert zurückgebenn
+            BindToElement("PositionsSelectedItem", BindingMode.TwoWay, lsvPositions, ListView.SelectedItemProperty);
+            //Positionsnummer setzen
+            BindToElement("Position", BindingMode.OneWay, txtPosition, TextBox.TextProperty);
+            //Artikel setzen
+            BindToElement("Article", BindingMode.OneWay, cmbArticle, ComboBox.ItemsSourceProperty);
+            //Artikel ->  Selektierter Wert zurückgebenn
+            BindToElement("ArticleSelectedItem", BindingMode.TwoWay, cmbArticle, ComboBox.SelectedItemProperty);
+            //Artikel Beschreibung setzen
+            BindToElement("ArticleValue", BindingMode.OneWay, txtArticle, TextBox.TextProperty);
+            //Menge setzen
+            BindToElement("Amount", BindingMode.TwoWay, txtAmount, TextBox.TextProperty);
+            //Error Sichtbarkeit setzen
+            BindToElement("Error", BindingMode.OneWay, lblError, Label.VisibilityProperty);
+            //Error Fehlerliste setzen
+            BindToElement("ErrorList", BindingMode.OneWay, lblError, Label.ContentProperty);
+            //BearbeitungsModus setzen
+            BindToElement("SetEdit", BindingMode.OneWay, dtpDate, DatePicker.IsEnabledProperty);
+            BindToElement("SetEdit", BindingMode.OneWay, cmbCustomer, ComboBox.IsEnabledProperty);
+            BindToElement("SetEdit", BindingMode.OneWay, lsvPositions, ListView.IsEnabledProperty);
+            BindToElement("SetEdit", BindingMode.OneWay, grdPositionData, Grid.IsEnabledProperty);
+            BindToElement("SetPositionEdit", BindingMode.OneWay, cmbArticle, ComboBox.IsEnabledProperty);
+            BindToElement("SetPositionEdit", BindingMode.OneWay, txtAmount, TextBox.IsEnabledProperty);
         }
+        
 
         public void BindToElement(string path, BindingMode mode, DependencyObject element, DependencyProperty property)
         {
             //Bindings für die verschiedenen Elemente setzen
-            Binding bindingItem = SupportingTools.GenerateBinding(BindingContext, path, mode, element, property);
+            Binding bindingItem = SupportingTools.GenerateBinding(DataContext, path, mode, element, property);
             BindingOperations.SetBinding(element, property, bindingItem);
         }
     }

@@ -10,6 +10,7 @@
 
     <Grid x:Name="grdAddressData">
         <Grid.RowDefinitions>
+            <RowDefinition Height="5"/>
             <RowDefinition Height="25"/>
             <RowDefinition Height="5"/>
             <RowDefinition Height="25"/>
@@ -29,19 +30,20 @@
             <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="100*"/>
         </Grid.ColumnDefinitions>
-        <Frame x:Name="frmSearch" Grid.Row="0" Grid.Column="0" Grid.RowSpan="7"></Frame>
+        <Frame x:Name="frmSearch" Grid.Row="0" Grid.Column="0" Grid.RowSpan="8" NavigationUIVisibility="Hidden"></Frame>
 
-        <Label x:Name="lblAddressNR" Content="Kunden-Nr.:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Top" Width="80"/>
-        <TextBox x:Name="txtAddressNr" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="2" TextWrapping="Wrap" Text="*Neu*" IsEnabled="False" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="lblAddressNR" Content="Adress-Nr.:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="txtAddressNr" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="3" TextWrapping="Wrap" Text="*Neu*" IsEnabled="False" VerticalAlignment="Top" Width="120"/>
 
-        <Label x:Name="lblStreet" Content="Strasse:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="4" VerticalAlignment="Top" Width="80"/>
-        <TextBox x:Name="txtStreet" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="4" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="lblNumber" Content="Nr.:" Grid.Column="5" HorizontalAlignment="Left" Grid.Row="4" VerticalAlignment="Top" Width="80"/>
-        <TextBox x:Name="txtNumber" Grid.Column="6" HorizontalAlignment="Left" Height="25" Grid.Row="4" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="lblStreet" Content="Strasse:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="txtStreet" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="5" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="lblNumber" Content="Nr.:" Grid.Column="5" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="txtNumber" Grid.Column="6" HorizontalAlignment="Left" Height="25" Grid.Row="5" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
 
-        <Label x:Name="lblZIP" Content="PLZ:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="6" VerticalAlignment="Top" Width="80"/>
-        <TextBox x:Name="txtZIP" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="6" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="lblCity" Content="Ort:" Grid.Column="5" HorizontalAlignment="Left" Grid.Row="6" VerticalAlignment="Top" Width="80"/>
-        <TextBox x:Name="txtCity" Grid.Column="6" HorizontalAlignment="Left" Height="25" Grid.Row="6" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="lblZIP" Content="PLZ:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="txtZIP" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="7" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="lblCity" Content="Ort:" Grid.Column="5" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="txtCity" Grid.Column="6" HorizontalAlignment="Left" Height="25" Grid.Row="7" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="lblError" Content="" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Grid.ColumnSpan="7" Width="585" BorderBrush="#FFB92323" Foreground="#FFB92323" BorderThickness="1" Visibility="Hidden"/>
     </Grid>
 </Page>

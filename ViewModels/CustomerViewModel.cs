@@ -1,73 +1,110 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Access;
+using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
 
 namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
 {
-    public class CustomerViewModel
+    public class CustomerViewModel : INotifyPropertyChanged
     {
         public CustomerViewModel()
         {
             if (DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
                 return;
+
+            this.CustomerData = new Customer();
+            this.CurrentSearchMask = new SearchPage();
+            this.Error = Visibility.Hidden;
         }
 
-        private SearchViewModel _searchViewModel;
-        public SearchViewModel SearchViewModel
+        public MainViewModel Parent;
+
+        public AuftragsverwaltungDataAccess DataAccess;
+        
+        private Customer _customerData;
+        private Customer CustomerData
         {
-            get { return _searchViewModel; }
+            get { return _customerData; }
             set
             {
-                _searchViewModel = value;
-                NotifyPropertyChanged("SearchViewModel");
+                _customerData = value;
+                NotifyPropertyChanged(nameof(CustomerNr));
+                NotifyPropertyChanged(nameof(Name));
+                NotifyPropertyChanged(nameof(AddressSelectedItem));
+                NotifyPropertyChanged(nameof(EMail));
+                NotifyPropertyChanged(nameof(Website));
             }
         }
 
-        private Int32 _custNr;
-        public Int32 CustNr
+        private SearchPage _currentSearchMask;
+        public SearchPage CurrentSearchMask
         {
-            get { return _custNr; }
+            get { return _currentSearchMask; }
             set
             {
-                _custNr = value;
-                NotifyPropertyChanged("CustNr");
+                _currentSearchMask = value;
+                NotifyPropertyChanged(nameof(CurrentSearchMask));
             }
         }
 
-        private String _name;
+        public Boolean ResetSearchMask
+        {
+            get { return false; }
+            set { if (value == true) CurrentSearchMask = new SearchPage(); }
+        }
+
+        public string CustomerNr
+        {
+            get { return CustomerData.CustomerKey + CustomerData.CustomerNr; }
+            set
+            {
+                CustomerData.CustomerKey = value.Substring(0, 2);
+                CustomerData.CustomerNr = int.Parse(value.Substring(2));
+                NotifyPropertyChanged(nameof(CustomerNr));
+            }
+        }
+        
         public String Name
         {
-            get { return _name; }
+            get { return CustomerData.Name; }
             set
             {
-                _name = value;
-                NotifyPropertyChanged("Name");
+                CustomerData.Name = value;
+                NotifyPropertyChanged(nameof(Name));
             }
         }
-
-        private Dictionary<Int32, String> _address;
-        public Dictionary<Int32, String> Address
+        
+        public Dictionary<String, String> Address
         {
-            get { return _address; }
-            set
-            {
-                _address = value;
-                NotifyPropertyChanged("Address");
-            }
+            get { return DataAccess.Addresses.ToDictionary(a => a.AddressKey + a.AddressNr, a => a.Street + " " + a.Number + ", " + a.ZIP + " " + a.City); }
+            set { NotifyPropertyChanged(nameof(Address)); }
         }
-
-        private KeyValuePair<Int32, String> _addressSelectedItem;
-        public KeyValuePair<Int32, String> AddressSelectedItem
+        
+        public KeyValuePair<String, String> AddressSelectedItem
         {
-            get { return _addressSelectedItem; }
+            get
+            {
+                KeyValuePair<String, String> ItemKeyValue = new KeyValuePair<String, String>();
+
+                if (CustomerData != null && CustomerData.Address1 != null)
+                    ItemKeyValue = new KeyValuePair<string, string>(CustomerData.Address1.AddressKey + CustomerData.Address1.AddressNr, CustomerData.Address1.Street + " " + CustomerData.Address1.Number + ", " + CustomerData.Address1.City + " " + CustomerData.Address1.ZIP);
+
+                return ItemKeyValue;
+            }
             set
             {
-                _addressSelectedItem = value;
+
+                CustomerData.Address1 = value.Key == null ? new Address() : DataAccess.Addresses.First(a => a.AddressKey + a.AddressNr == value.Key);
+                CustomerData.AddressNr = value.Key == null ? 0 : int.Parse(value.Key.Substring(2));
+                CustomerData.Address = "CU";
                 AddressValue = value.Value;
-                NotifyPropertyChanged("AddressSelectedItem");
+                NotifyPropertyChanged(nameof(AddressSelectedItem));
             }
         }
 
@@ -78,53 +115,166 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set
             {
                 _addressValue = value;
-                NotifyPropertyChanged("AddressValue");
+                NotifyPropertyChanged(nameof(AddressValue));
             }
         }
-
-        private String _eMail;
+        
         public String EMail
         {
-            get { return _eMail; }
+            get { return CustomerData.EMail; }
             set
             {
-                _eMail = value;
-                NotifyPropertyChanged("EMail");
+                CustomerData.EMail = value;
+                NotifyPropertyChanged(nameof(EMail));
             }
         }
-
-        private String _website;
+        
         public String Website
         {
-            get { return _website; }
+            get { return CustomerData.Website; }
             set
             {
-                _website = value;
-                NotifyPropertyChanged("Website");
+                CustomerData.Website = value;
+                NotifyPropertyChanged(nameof(Website));
             }
         }
 
-
-        private List<Object> _itemList;
-        public List<Object> ItemList
+        public Dictionary<String, String> ItemList
         {
-            get { return _itemList; }
+            get
+            {
+                Dictionary<String, String> dataDictionary;
+                if (SearchTerm != null)
+                    dataDictionary = DataAccess.Customers.Where(c => (c.CustomerKey + c.CustomerNr).Contains(SearchTerm) ||
+                                                                     c.Name.Contains(SearchTerm) ||
+                                                                     c.EMail.Contains(SearchTerm) ||
+                                                                     c.Website.Contains(SearchTerm))
+                        .ToDictionary(c => c.CustomerKey + c.CustomerNr, c => c.Name);
+                else
+                    dataDictionary = DataAccess.Customers.ToDictionary(c => c.CustomerKey + c.CustomerNr, c => c.Name);
+                
+                return dataDictionary;
+            }
             set
             {
-                _itemList = value;
-                SearchViewModel.ItemList = _itemList;
-                NotifyPropertyChanged("ItemList");
+                NotifyPropertyChanged(nameof(ItemList));
             }
         }
 
-        private Int32 _selectedItem;
-        public Int32 SelectedItem
+        private String _searchTerm;
+        public String SearchTerm
+        {
+            get { return _searchTerm; }
+            set
+            {
+                _searchTerm = value;
+                NotifyPropertyChanged(nameof(ItemList));
+                NotifyPropertyChanged(nameof(SearchTerm));
+            }
+        }
+
+        private KeyValuePair<String, String> _selectedItem;
+        public KeyValuePair<String, String> SelectedItem
         {
             get { return _selectedItem; }
             set
             {
                 _selectedItem = value;
-                NotifyPropertyChanged("SelectedItem");
+                CustomerData = DataAccess.Customers.First(c => c.CustomerKey + c.CustomerNr == value.Key);
+                SetEdit = false;
+                NotifyPropertyChanged(nameof(SelectedItem));
+            }
+        }
+
+        private Dictionary<Int32, String> _errorList;
+
+        public Dictionary<Int32, String> ErrorList
+        {
+            get { return _errorList; }
+            set
+            {
+                _errorList = value;
+                if (_errorList.Count > 0)
+                    Error = Visibility.Visible;
+                else
+                    Error = Visibility.Hidden;
+                NotifyPropertyChanged(nameof(ErrorList));
+            }
+        }
+
+        private Visibility _error;
+        public Visibility Error
+        {
+            get { return _error; }
+            set
+            {
+                _error = value;
+                NotifyPropertyChanged(nameof(Error));
+            }
+        }
+
+        private bool _saveData;
+        public bool SaveData
+        {
+            get { return _saveData; }
+            set
+            {
+                if ((_errorList == null || _errorList.Count == 0) && value)
+                {
+                    if (CustomerNr == "CU0")
+                    {
+                        int newKey = DataAccess.Customers.Select(c => c.CustomerNr).DefaultIfEmpty(0).Max();
+                        CustomerData.CustomerNr = newKey == 0 ? 1000000 : newKey + 1;
+                    }
+
+                    DataAccess.Customers.AddOrUpdate(CustomerData);
+                    DataAccess.SaveChanges();
+                    Parent.DataAccess = DataAccess;
+                    NotifyPropertyChanged(nameof(ItemList));
+                }
+            }
+        }
+
+        private bool _deleteData;
+        public bool DeleteData
+        {
+            get { return _saveData; }
+            set
+            {
+                if (value && DataAccess.Customers.Select(c => c.CustomerNr).Contains(CustomerData.CustomerNr))
+                {
+                    DataAccess.Customers.Remove(CustomerData);
+                    DataAccess.SaveChanges();
+                    Parent.DataAccess = DataAccess;
+                    NotifyPropertyChanged(nameof(ItemList));
+                    SetNew = true;
+                }
+            }
+        }
+
+        private bool _setNew;
+        public bool SetNew
+        {
+            get { return _setNew; }
+            set
+            {
+                if (value)
+                {
+                    CustomerData = new Customer();
+                    CustomerData.CustomerKey = "CU";
+                    AddressSelectedItem = new KeyValuePair<string, string>();
+                }
+            }
+        }
+
+        private bool _setEdit;
+        public bool SetEdit
+        {
+            get { return _setEdit; }
+            set
+            {
+                _setEdit = value;
+                NotifyPropertyChanged(nameof(SetEdit));
             }
         }
 

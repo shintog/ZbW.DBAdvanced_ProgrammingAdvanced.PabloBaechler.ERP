@@ -22,18 +22,17 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
     /// </summary>
     public partial class ArticlePage : Page
     {
-        public object BindingContext { get; set; }
         public ArticlePage()
         {
             InitializeComponent();
-            BindingContext = ((MainViewModel)((MainWindow)App.Current.MainWindow).BindingContext).ArticleViewModel;
+            DataContext = ((MainViewModel)((MainWindow)App.Current.MainWindow).DataContext).ArticleViewModel;
             SetBindings();
         }
 
         public void SetBindings()
         {
             //Frame -> Suchmaske setzen
-            BindToElement("SearchViewModel", BindingMode.OneWay, frmSearch, Frame.ContentProperty);
+            BindToElement("CurrentSearchMask", BindingMode.OneWay, frmSearch, Frame.ContentProperty);
             //Artikelnummer setzen
             BindToElement("ArticleNr", BindingMode.OneWay, txtArticleNr, TextBox.TextProperty);
             //Name setzen
@@ -43,7 +42,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             //Klassifikation setzen
             BindToElement("Classification", BindingMode.OneWay, cmbClassification, ComboBox.ItemsSourceProperty);
             //Klassifikation ->  Selektierter Wert zurückgeben
-            BindToElement("ClassificationSelectedItem", BindingMode.OneWayToSource, cmbClassification, ComboBox.SelectedItemProperty);
+            BindToElement("ClassificationSelectedItem", BindingMode.TwoWay, cmbClassification, ComboBox.SelectedItemProperty);
             //Gewählte Klassifik,kation anzeigen setzen
             BindToElement("ClassificationValue", BindingMode.OneWay, txtClassification, TextBox.TextProperty);
             //Einkaufspreis setzen
@@ -51,19 +50,31 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             //Währung setzen
             BindToElement("Currency", BindingMode.OneWay, cmbPPCurrency, ComboBox.ItemsSourceProperty);
             //Einkaufspreis ->  Selektierter Wert zurückgeben
-            BindToElement("PPCurrencySelectedItem", BindingMode.OneWayToSource, cmbPPCurrency, ComboBox.SelectedItemProperty);
+            BindToElement("PPCurrencySelectedItem", BindingMode.TwoWay, cmbPPCurrency, ComboBox.SelectedItemProperty);
             //Verkaufspreis setzen
             BindToElement("SalesPrice", BindingMode.TwoWay, txtSalesPrice, TextBox.TextProperty);
             //Währung setzen
             BindToElement("Currency", BindingMode.OneWay, cmbSPCurrency, ComboBox.ItemsSourceProperty);
             //Verkaufspreis ->  Selektierter Wert zurückgeben
-            BindToElement("SPCurrencySelectedItem", BindingMode.OneWayToSource, cmbSPCurrency, ComboBox.SelectedItemProperty);
+            BindToElement("SPCurrencySelectedItem", BindingMode.TwoWay, cmbSPCurrency, ComboBox.SelectedItemProperty);
+            //Error Sichtbarkeit setzen
+            BindToElement("Error", BindingMode.OneWay, lblError, Label.VisibilityProperty);
+            //Error Fehlerliste setzen
+            BindToElement("ErrorList", BindingMode.OneWay, lblError, Label.ContentProperty);
+            //BearbeitungsModus setzen
+            BindToElement("SetEdit", BindingMode.OneWay, txtName, TextBox.IsEnabledProperty);
+            BindToElement("SetEdit", BindingMode.OneWay, txtDesignation, TextBox.IsEnabledProperty);
+            BindToElement("SetEdit", BindingMode.OneWay, cmbClassification, ComboBox.IsEnabledProperty);
+            BindToElement("SetEdit", BindingMode.OneWay, txtPurchasingPrice, TextBox.IsEnabledProperty);
+            BindToElement("SetEdit", BindingMode.OneWay, cmbPPCurrency, ComboBox.IsEnabledProperty);
+            BindToElement("SetEdit", BindingMode.OneWay, txtSalesPrice, TextBox.IsEnabledProperty);
+            BindToElement("SetEdit", BindingMode.OneWay, cmbSPCurrency, ComboBox.IsEnabledProperty);
         }
 
         public void BindToElement(string path, BindingMode mode, DependencyObject element, DependencyProperty property)
         {
             //Bindings für die verschiedenen Elemente setzen
-            Binding bindingItem = SupportingTools.GenerateBinding(BindingContext, path, mode, element, property);
+            Binding bindingItem = SupportingTools.GenerateBinding(DataContext, path, mode, element, property);
             BindingOperations.SetBinding(element, property, bindingItem);
         }
     }

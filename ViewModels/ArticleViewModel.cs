@@ -1,84 +1,125 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Forms.VisualStyles;
+using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Access;
+using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
 
 namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
 {
-    public class ArticleViewModel
+    public class ArticleViewModel : INotifyPropertyChanged
     {
         public ArticleViewModel()
         {
             if (DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
                 return;
+
+            this.ArticleData = new Article();
+            this.CurrentSearchMask = new SearchPage();
+            this.Error = Visibility.Hidden;
         }
 
-        private SearchViewModel _searchViewModel;
-        public SearchViewModel SearchViewModel
+        public MainViewModel Parent;
+
+        public AuftragsverwaltungDataAccess DataAccess;
+        
+        private Article _articleData;
+        private Article ArticleData
         {
-            get { return _searchViewModel; }
+            get { return _articleData; }
             set
             {
-                _searchViewModel = value;
-                NotifyPropertyChanged("SearchViewModel");
+                _articleData = value;
+                NotifyPropertyChanged(nameof(ArticleNr));
+                NotifyPropertyChanged(nameof(Name));
+                NotifyPropertyChanged(nameof(Designation));
+                NotifyPropertyChanged(nameof(ClassificationSelectedItem));
+                NotifyPropertyChanged(nameof(PurchasingPrice));
+                NotifyPropertyChanged(nameof(PPCurrencySelectedItem));
+                NotifyPropertyChanged(nameof(SalesPrice));
+                NotifyPropertyChanged(nameof(SPCurrencySelectedItem));
             }
         }
 
-        private Int32 _articleNr;
-        public Int32 ArticleNr
+
+        private SearchPage _currentSearchMask;
+        public SearchPage CurrentSearchMask
         {
-            get { return _articleNr; }
+            get { return _currentSearchMask; }
             set
             {
-                _articleNr = value;
-                NotifyPropertyChanged("ArticleNr");
+                _currentSearchMask = value;
+                NotifyPropertyChanged(nameof(CurrentSearchMask));
             }
         }
 
-        private String _name;
+        public Boolean ResetSearchMask
+        {
+            get { return false; }
+            set { if (value == true) CurrentSearchMask = new SearchPage(); }
+        }
+
+        public int ArticleNr
+        {
+            get { return ArticleData.ArticleNr; }
+            set
+            {
+                ArticleData.ArticleNr = value;
+                NotifyPropertyChanged(nameof(ArticleNr));
+            }
+        }
+        
         public String Name
         {
-            get { return _name; }
+            get { return ArticleData.Name; }
             set
             {
-                _name = value;
-                NotifyPropertyChanged("Name");
+                ArticleData.Name = value;
+                NotifyPropertyChanged(nameof(Name));
             }
         }
-
-        private String _designation;
+        
         public String Designation
         {
-            get { return _designation; }
+            get { return ArticleData.Designation; }
             set
             {
-                _designation = value;
-                NotifyPropertyChanged("Designation");
+                ArticleData.Designation = value;
+                NotifyPropertyChanged(nameof(Designation));
             }
         }
-
-        private Dictionary<Int32, String> _classification;
-        public Dictionary<Int32, String> Classification
+        
+        public Dictionary<int, String> Classification
         {
-            get { return _classification; }
-            set
-            {
-                _classification = value;
-                NotifyPropertyChanged("Classification");
-            }
+            get { return DataAccess.ArticleClassifications.ToDictionary(a => a.ClassificationNr, a => a.Name); }
+            set { NotifyPropertyChanged(nameof(Classification)); }
         }
-
-        private KeyValuePair<Int32, String> _classificationSelectedItem;
-        public KeyValuePair<Int32, String> ClassificationSelectedItem
+        
+        public KeyValuePair<int, String> ClassificationSelectedItem
         {
-            get { return _classificationSelectedItem; }
+            get
+            {
+                KeyValuePair<int, String> ItemKeyValue = new KeyValuePair<int, String>();
+
+                if (ArticleData != null && ArticleData.ArticleClassification != null)
+                    ItemKeyValue = new KeyValuePair<int, String>(ArticleData.ArticleClassification.ClassificationNr, ArticleData.ArticleClassification.Name);
+
+                return ItemKeyValue;
+            }
             set
             {
-                _classificationSelectedItem = value;
-                ClassificationValue = value.Value;
-                NotifyPropertyChanged("ClassificationSelectedItem");
+                if (value.Key > 0)
+                {
+                    ArticleData.ArticleClassification =
+                        DataAccess.ArticleClassifications.First(a => a.ClassificationNr == value.Key);
+                    ClassificationValue = value.Value;
+                    NotifyPropertyChanged(nameof(ClassificationSelectedItem));
+                }
             }
         }
 
@@ -89,86 +130,211 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set
             {
                 _classificationtValue = value;
-                NotifyPropertyChanged("ClassificationValue");
+                NotifyPropertyChanged(nameof(ClassificationValue));
             }
         }
-
-        private Int32 _purchasingPrice;
-        public Int32 PurchasingPrice
+        
+        public Decimal PurchasingPrice
         {
-            get { return _purchasingPrice; }
+            get { return ArticleData.PurchasingPrice; }
             set
             {
-                _purchasingPrice = value;
-                NotifyPropertyChanged("PurchasingPrice");
+                ArticleData.PurchasingPrice = value;
+                NotifyPropertyChanged(nameof(PurchasingPrice));
             }
         }
-
-        private Dictionary<Int32, String> _currency;
-        public Dictionary<Int32, String> Currency
+        
+        public Dictionary<String, String> Currency
         {
-            get { return _currency; }
+            get { return DataAccess.Currencies.ToDictionary(c => c.CurrencyCode, c => c.Name); }
             set
             {
-                _currency = value;
-                NotifyPropertyChanged("Currency");
+                NotifyPropertyChanged(nameof(Currency));
             }
         }
-
-        private KeyValuePair<Int32, String> _pPCurrencySelectedItem;
-        public KeyValuePair<Int32, String> PPCurrencySelectedItem
+        
+        public KeyValuePair<String, String> PPCurrencySelectedItem
         {
-            get { return _pPCurrencySelectedItem; }
+            get
+            {
+                KeyValuePair<String, String> ItemKeyValue = new KeyValuePair<String, String>();
+
+                if (ArticleData != null && ArticleData.Currency != null)
+                    ItemKeyValue =
+                        new KeyValuePair<string, string>(ArticleData.Currency.CurrencyCode, ArticleData.Currency.Name);
+
+                return ItemKeyValue;
+            }
             set
             {
-                _pPCurrencySelectedItem = value;
-                NotifyPropertyChanged("PPCurrencySelectedItem");
+                ArticleData.PPCurrency = value.Key;
+                NotifyPropertyChanged(nameof(PPCurrencySelectedItem));
             }
         }
 
-        private Int32 _salesPrice;
-        public Int32 SalesPrice
+        public Decimal SalesPrice
         {
-            get { return _salesPrice; }
+            get { return ArticleData.SalesPrice; }
             set
             {
-                _salesPrice = value;
-                NotifyPropertyChanged("SalesPrice");
+                ArticleData.SalesPrice = value;
+                NotifyPropertyChanged(nameof(SalesPrice));
             }
         }
-
-        private KeyValuePair<Int32, String> _sPCurrencySelectedItem;
-        public KeyValuePair<Int32, String> SPCurrencySelectedItem
+        
+        public KeyValuePair<String, String> SPCurrencySelectedItem
         {
-            get { return _sPCurrencySelectedItem; }
+            get
+            {
+                KeyValuePair<String, String> ItemKeyValue = new KeyValuePair<String, String>();
+
+                if (ArticleData != null && ArticleData.Currency1 != null)
+                    ItemKeyValue =
+                        new KeyValuePair<string, string>(ArticleData.Currency1.CurrencyCode, ArticleData.Currency1.Name);
+
+                return ItemKeyValue;
+            }
             set
             {
-                _sPCurrencySelectedItem = value;
-                NotifyPropertyChanged("SPCurrencySelectedItem");
+                ArticleData.SPCurrency = value.Key;
+                NotifyPropertyChanged(nameof(SPCurrencySelectedItem));
             }
         }
-
-
-        private List<Object> _itemList;
-        public List<Object> ItemList
+        public Dictionary<int, String> ItemList
         {
-            get { return _itemList; }
+            get
+            {
+                Dictionary<int, String> dataDictionary;
+                if (SearchTerm != null)
+                    dataDictionary = DataAccess.Articles.Where(a => a.ArticleNr.ToString().Contains(SearchTerm) ||
+                                                                    a.Name.Contains(SearchTerm) ||
+                                                                    a.Designation.Contains(SearchTerm))
+                        .ToDictionary(a => a.ArticleNr, a => a.Name);
+                else
+                    dataDictionary = DataAccess.Articles.ToDictionary(a => a.ArticleNr, a => a.Name);
+                
+                return dataDictionary;
+            }
             set
             {
-                _itemList = value;
-                SearchViewModel.ItemList = _itemList;
-                NotifyPropertyChanged("ItemList");
+                NotifyPropertyChanged(nameof(ItemList));
             }
         }
 
-        private Int32 _selectedItem;
-        public Int32 SelectedItem
+        private String _searchTerm;
+        public String SearchTerm
+        {
+            get { return _searchTerm; }
+            set
+            {
+                _searchTerm = value;
+                NotifyPropertyChanged(nameof(ItemList));
+                NotifyPropertyChanged(nameof(SearchTerm));
+            }
+        }
+
+        private KeyValuePair<int, String> _selectedItem;
+        public KeyValuePair<int, String> SelectedItem
         {
             get { return _selectedItem; }
             set
             {
                 _selectedItem = value;
-                NotifyPropertyChanged("SelectedItem");
+                ArticleData = DataAccess.Articles.First(a => a.ArticleNr == value.Key);
+                SetEdit = false;
+                NotifyPropertyChanged(nameof(SelectedItem));
+            }
+        }
+
+        private Dictionary<Int32, String> _errorList;
+
+        public Dictionary<Int32, String> ErrorList
+        {
+            get { return _errorList; }
+            set
+            {
+                _errorList = value;
+                if (_errorList.Count > 0)
+                    Error = Visibility.Visible;
+                else
+                    Error = Visibility.Hidden;
+                NotifyPropertyChanged(nameof(ErrorList));
+            }
+        }
+
+        private Visibility _error;
+        public Visibility Error
+        {
+            get { return _error; }
+            set
+            {
+                _error = value;
+                NotifyPropertyChanged(nameof(Error));
+            }
+        }
+
+        private bool _saveData;
+        public bool SaveData
+        {
+            get { return _saveData; }
+            set
+            {
+                if ((_errorList == null || _errorList.Count == 0) && value)
+                {
+                    if (ArticleNr == 0)
+                    {
+                        int newKey = DataAccess.Articles.Select(a => a.ArticleNr).DefaultIfEmpty(0).Max();
+                        ArticleData.ArticleNr = newKey == 0 ? 1000000 : newKey + 1;
+                    }
+
+                    DataAccess.Articles.AddOrUpdate(ArticleData);
+                    DataAccess.SaveChanges();
+                    Parent.DataAccess = DataAccess;
+                    NotifyPropertyChanged(nameof(ItemList));
+                }
+            }
+        }
+
+        private bool _deleteData;
+        public bool DeleteData
+        {
+            get { return _saveData; }
+            set
+            {
+                if (value && DataAccess.Articles.Select(a => a.ArticleNr).Contains(ArticleData.ArticleNr))
+                {
+                    DataAccess.Articles.Remove(ArticleData);
+                    DataAccess.SaveChanges();
+                    NotifyPropertyChanged(nameof(ItemList));
+                    SetNew = true;
+                }
+            }
+        }
+
+        private bool _setNew;
+        public bool SetNew
+        {
+            get { return _setNew; }
+            set
+            {
+                if (value)
+                {
+                    ArticleData = new Article();
+                    ClassificationSelectedItem = new KeyValuePair<int, string>();
+                    PPCurrencySelectedItem = new KeyValuePair<string, string>();
+                    SPCurrencySelectedItem = new KeyValuePair<string, string>();
+                }
+            }
+        }
+
+        private bool _setEdit;
+        public bool SetEdit
+        {
+            get { return _setEdit; }
+            set
+            {
+                _setEdit = value;
+                NotifyPropertyChanged(nameof(SetEdit));
             }
         }
 

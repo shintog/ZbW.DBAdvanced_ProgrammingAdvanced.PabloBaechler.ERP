@@ -22,11 +22,10 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
     /// </summary>
     public partial class AddressPage : Page
     {
-        public object BindingContext { get; set; }
         public AddressPage()
         {
             InitializeComponent();
-            BindingContext = ((MainViewModel)((MainWindow)App.Current.MainWindow).BindingContext).AddressViewModel;
+            DataContext = ((MainViewModel)((MainWindow)App.Current.MainWindow).DataContext).AddressViewModel;
             SetBindings();
         }
 
@@ -44,12 +43,21 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             BindToElement("ZIP", BindingMode.TwoWay, txtZIP, TextBox.TextProperty);
             //Ort setzen
             BindToElement("City", BindingMode.TwoWay, txtCity, TextBox.TextProperty);
+            //Error Sichtbarkeit setzen
+            BindToElement("Error", BindingMode.OneWay, lblError, Label.VisibilityProperty);
+            //Error Fehlerliste setzen
+            BindToElement("ErrorList", BindingMode.OneWay, lblError, Label.ContentProperty);
+            //BearbeitungsModus setzen
+            BindToElement("SetEdit", BindingMode.OneWay, txtStreet, TextBox.IsEnabledProperty);
+            BindToElement("SetEdit", BindingMode.OneWay, txtNumber, TextBox.IsEnabledProperty);
+            BindToElement("SetEdit", BindingMode.OneWay, txtZIP, TextBox.IsEnabledProperty);
+            BindToElement("SetEdit", BindingMode.OneWay, txtCity, TextBox.IsEnabledProperty);
         }
 
         public void BindToElement(string path, BindingMode mode, DependencyObject element, DependencyProperty property)
         {
             //Bindings für die verschiedenen Elemente setzen
-            Binding bindingItem = SupportingTools.GenerateBinding(BindingContext, path, mode, element, property);
+            Binding bindingItem = SupportingTools.GenerateBinding(DataContext, path, mode, element, property);
             BindingOperations.SetBinding(element, property, bindingItem);
         }
     }

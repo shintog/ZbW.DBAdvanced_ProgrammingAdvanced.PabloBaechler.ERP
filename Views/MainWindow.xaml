@@ -5,35 +5,64 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views"
         mc:Ignorable="d"
-        Title="ZbW DB Advanced/Programming Advanced Projektarbeit ERP" Height="504.664" Width="800">
+        Title="ZbW DB Advanced/Programming Advanced Projektarbeit ERP" Height="533.933" Width="819.512" Icon="Logo.png" Background="White">
     <Grid>
-        <Grid HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="792">
+        <Grid HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="800" Background="#FFC8C8FA">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="120"/>
-                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="135"/>
+                <ColumnDefinition Width="8"/>
                 <ColumnDefinition Width="25"/>
-                <ColumnDefinition Width="100*"/>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="445*"/>
+                <ColumnDefinition Width="25"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="25"/>
                 <RowDefinition Height="25*"/>
             </Grid.RowDefinitions>
-            <Label x:Name="lblApplication" Content="Applikation:" Grid.Column="0" Grid.Row="0"/>
-            <ComboBox x:Name="cmbApplications" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="25" IsEditable="True" Grid.Row="0" SelectedValuePath="Key" DisplayMemberPath="Value"/>
-            <Button x:Name="cmdSave" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Left" Margin="0,0,0,0" Width="25" BorderBrush="{x:Null}" Background="{x:Null}">
+            <Label x:Name="lblApplication" Content="Programm:" Grid.Column="0" Grid.Row="0"/>
+            <ComboBox x:Name="cmbApplications" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="135" Height="25" IsEditable="True" Grid.Row="0" SelectedValuePath="Key" DisplayMemberPath="Value"/>
+            <Button x:Name="cmdNew" Command="{Binding Path=ClickNewCommand}" CommandParameter="{Binding}"  Grid.Column="3" HorizontalAlignment="Left" Margin="0,0,0,0" Width="25" BorderBrush="{x:Null}" Background="{x:Null}" Grid.Row="0">
                 <StackPanel>
-                    <Image Source="Resources/Icons/Save.png" RenderTransformOrigin="1.648,0.711" />
-                    <TextBlock><Run Text="Disconnect from Server"/></TextBlock>
+                    <Image Source="new.png" RenderTransformOrigin="1.648,0.711" />
+                    <TextBlock><Run Text="Neu"/></TextBlock>
                 </StackPanel>
             </Button>
-            <Button x:Name="cmdAbort" Grid.Column="4" HorizontalAlignment="Left" Margin="0,0,0,0" Width="25" BorderBrush="{x:Null}" Background="{x:Null}" Grid.Row="0">
+            <Button x:Name="cmdEdit" Command="{Binding Path=ClickEditCommand}" CommandParameter="{Binding}"  Grid.Column="4" HorizontalAlignment="Left" Margin="0,0,0,0" Width="25" BorderBrush="{x:Null}" Background="{x:Null}" Grid.Row="0">
                 <StackPanel>
-                    <Image Source="Resources/Icons/Abort.png" RenderTransformOrigin="1.648,0.711" />
-                    <TextBlock><Run Text="Disconnect from Server"/></TextBlock>
+                    <Image Source="edit.png" RenderTransformOrigin="1.648,0.711" />
+                    <TextBlock><Run Text="Bearbeiten"/></TextBlock>
                 </StackPanel>
             </Button>
-            <Frame x:Name="frmApplication" Content="" HorizontalAlignment="Left" Height="447" Margin="0,0,0,-447" VerticalAlignment="Top" Width="792" NavigationUIVisibility="Hidden" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5"/>
+            <Button x:Name="cmdSave" Command="{Binding Path=ClickSaveCommand}" CommandParameter="{Binding}"  Grid.Column="5" Grid.Row="0" HorizontalAlignment="Left" Margin="0,0,0,0" Width="25" BorderBrush="{x:Null}" Background="{x:Null}">
+                <StackPanel>
+                    <Image Source="Save.png" RenderTransformOrigin="1.648,0.711" />
+                    <TextBlock><Run Text="Speichern"/></TextBlock>
+                </StackPanel>
+            </Button>
+            <Button x:Name="cmdDelete" Command="{Binding Path=ClickDeleteCommand}" CommandParameter="{Binding}"  Grid.Column="6" HorizontalAlignment="Left" Margin="0,0,0,0" Width="25" BorderBrush="{x:Null}" Background="{x:Null}" Grid.Row="0">
+                <StackPanel>
+                    <Image Source="delete.png" RenderTransformOrigin="1.648,0.711" />
+                    <TextBlock><Run Text="Abbrechen"/></TextBlock>
+                </StackPanel>
+            </Button>
+            <Button x:Name="cmdAbort" Command="{Binding Path=ClickAbortCommand}" CommandParameter="{Binding}"  Grid.Column="7" HorizontalAlignment="Left" Margin="0,0,0,0" Width="25" BorderBrush="{x:Null}" Background="{x:Null}" Grid.Row="0">
+                <StackPanel>
+                    <Image Source="Abort.png" RenderTransformOrigin="1.648,0.711" />
+                    <TextBlock><Run Text="Abbrechen"/></TextBlock>
+                </StackPanel>
+            </Button>
+            <Button x:Name="cmdHistory" Command="{Binding Path=ClickHistoryCommand}" CommandParameter="{Binding}"  Grid.Column="9" HorizontalAlignment="Left" Margin="0,0,0,0" Width="25" BorderBrush="{x:Null}" Background="{x:Null}" Grid.Row="0">
+                <StackPanel>
+                    <Image Source="history.png" RenderTransformOrigin="1.648,0.711" />
+                    <TextBlock><Run Text="Änderungshistorie"/></TextBlock>
+                </StackPanel>
+            </Button>
+            <Frame x:Name="frmApplication" Content="" HorizontalAlignment="Left" Height="477" Margin="0,0,-8,-477" VerticalAlignment="Top" Width="800" NavigationUIVisibility="Hidden" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="10"/>
         </Grid>
 
 

@@ -22,12 +22,10 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
     /// </summary>
     public partial class ApplicationPage : Page
     {
-        public object BindingContext { get; set; }
-
         public ApplicationPage()
         {
             InitializeComponent();
-            BindingContext = ((MainViewModel)((MainWindow)App.Current.MainWindow).BindingContext).ApplicationViewModel; 
+            DataContext = ((MainViewModel)((MainWindow)App.Current.MainWindow).DataContext).ApplicationViewModel; 
             SetBindings();
         }
 
@@ -43,7 +41,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
         public void BindToElement(string path, BindingMode mode, DependencyObject element, DependencyProperty property)
         {
             //Bindings für die verschiedenen Elemente setzen
-            Binding bindingItem = SupportingTools.GenerateBinding(BindingContext, path, mode, element, property);
+            Binding bindingItem = SupportingTools.GenerateBinding(DataContext, path, mode, element, property);
             BindingOperations.SetBinding(element, property, bindingItem);
         }
     }

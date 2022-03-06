@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -14,6 +15,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Support;
+using Binding = System.Windows.Data.Binding;
+using ComboBox = System.Windows.Controls.ComboBox;
 
 namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views
 {
@@ -22,11 +25,11 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        public object BindingContext { get; set; }
         public MainWindow()
         {
+            this.DataContext = (MainViewModel)(new MainViewModel());
             InitializeComponent();
-            BindingContext = new MainViewModel();
+            RegisterPages();
             SetBindings();
         }
 
@@ -40,10 +43,19 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views
             BindToElement("SelectedItem", BindingMode.OneWayToSource, cmbApplications, ComboBox.SelectedItemProperty);
         }
 
+        public void RegisterPages()
+        {
+            ((MainViewModel)DataContext).CurrentApplications = SupportingTools.SetApplicationListDictionary();
+            ((MainViewModel)DataContext).ApplicationList = SupportingTools.SetApplicationPageListDictionary();
+            ((ApplicationViewModel)((MainViewModel)DataContext).ApplicationViewModel).CurrentApplications = SupportingTools.SetApplicationListDictionary();
+            ((ApplicationViewModel)((MainViewModel)DataContext).ApplicationViewModel).ApplicationList = SupportingTools.SetApplicationPageListDictionary();
+
+            ((MainViewModel)DataContext).ResetCurrentWindow = true;
+        }
         public void BindToElement(string path, BindingMode mode, DependencyObject element, DependencyProperty property)
         {
             //Bindings für die verschiedenen Elemente setzen
-            Binding bindingItem = SupportingTools.GenerateBinding(BindingContext, path, mode, element, property);
+            Binding bindingItem = SupportingTools.GenerateBinding(DataContext, path, mode, element, property);
             BindingOperations.SetBinding(element, property, bindingItem);
         }
     }
