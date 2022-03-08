@@ -200,17 +200,23 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>auftragsverwaltungDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Model\EF6 Data Access\Accounting.cs" />
     <Compile Include="Model\EF6 Data Access\Address.cs" />
+    <Compile Include="Model\EF6 Data Access\Address_History.cs" />
     <Compile Include="Model\EF6 Data Access\Article.cs" />
     <Compile Include="Model\EF6 Data Access\ArticleClassification.cs" />
+    <Compile Include="Model\EF6 Data Access\ArticleClassification_History.cs" />
+    <Compile Include="Model\EF6 Data Access\Article_History.cs" />
     <Compile Include="Model\EF6 Data Access\AuftragsverwaltungDataAccess.cs" />
     <Compile Include="Model\EF6 Data Access\Currency.cs" />
     <Compile Include="Model\EF6 Data Access\Customer.cs" />
-    <Compile Include="Model\EF6 Data Access\MSSQL_TemporalHistoryFor_1525580473.cs" />
+    <Compile Include="Model\EF6 Data Access\Customer_History.cs" />
     <Compile Include="Model\EF6 Data Access\Order.cs" />
+    <Compile Include="Model\EF6 Data Access\Order_History.cs" />
     <Compile Include="Model\EF6 Data Access\Position.cs" />
-    <Compile Include="Model\EF6 Data Access\sysdiagram.cs" />
+    <Compile Include="Model\EF6 Data Access\Position_History.cs" />
     <Compile Include="Support\SupportingTools.cs" />
+    <Compile Include="ViewModels\AccountingViewModel.cs" />
     <Compile Include="ViewModels\AddressViewModel.cs" />
     <Compile Include="ViewModels\ApplicationViewModel.cs" />
     <Compile Include="ViewModels\ArticleClassificationViewModel.cs" />
@@ -218,6 +224,9 @@
     <Compile Include="ViewModels\CustomerViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\OrderViewModel.cs" />
+    <Compile Include="Views\Pages\AccountingPage.xaml.cs">
+      <DependentUpon>AccountingPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Pages\AddressPage.xaml.cs">
       <DependentUpon>AddressPage.xaml</DependentUpon>
     </Compile>
@@ -232,6 +241,9 @@
     </Compile>
     <Compile Include="Views\Pages\CustomerPage.xaml.cs">
       <DependentUpon>CustomerPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\HistoryPage.xaml.cs">
+      <DependentUpon>HistoryPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Pages\OrderPage.xaml.cs">
       <DependentUpon>OrderPage.xaml</DependentUpon>
@@ -251,6 +263,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\Pages\AccountingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Pages\AddressPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -268,6 +284,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Pages\CustomerPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\HistoryPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -341,7 +361,7 @@
     <Resource Include="Views\Abort.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Views\Pages\Search.png" />
+    <Resource Include="Views\Search.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Views\Pages\Unchecked.png" />

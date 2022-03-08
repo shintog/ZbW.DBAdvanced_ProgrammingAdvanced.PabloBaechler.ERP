@@ -41,6 +41,10 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Ac
         [StringLength(50)]
         public string Website { get; set; }
 
+        [Required]
+        [MaxLength(64)]
+        public byte[] Password { get; set; }
+
         public virtual Address Address1 { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

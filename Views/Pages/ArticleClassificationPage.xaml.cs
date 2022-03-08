@@ -38,7 +38,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             //Parent-Objects setzen
             BindToElement("ParentClassification", BindingMode.OneWay, cmbParent, ComboBox.ItemsSourceProperty);
             //Parent ->  Selektierter Wert zurückgeben
-            BindToElement("ParentSelectedItem", BindingMode.TwoWay, cmbParent, ComboBox.SelectedItemProperty);
+            BindToElement("ParentSelectedItem", BindingMode.TwoWay, cmbParent, ComboBox.SelectedItemProperty);;
             //Parent-Value setzen
             BindToElement("ParentValue", BindingMode.TwoWay, txtParent, TextBox.TextProperty);
             //Parent-Value setzen
@@ -46,7 +46,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             //Error Sichtbarkeit setzen
             BindToElement("Error", BindingMode.OneWay, lblError, Label.VisibilityProperty);
             //Error Fehlerliste setzen
-            BindToElement("ErrorList", BindingMode.OneWay, lblError, Label.ContentProperty);
+            BindToElement("CurrentError", BindingMode.OneWay, lblError, Label.ContentProperty);
             //BearbeitungsModus setzen
             BindToElement("SetEdit", BindingMode.OneWay, cmbParent, ComboBox.IsEnabledProperty);
             BindToElement("SetEdit", BindingMode.OneWay, txtName, TextBox.IsEnabledProperty);

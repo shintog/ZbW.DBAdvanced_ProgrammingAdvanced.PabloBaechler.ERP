@@ -1,0 +1,29 @@
+﻿<Page x:Class="ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages.AccountingPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="AccountingPage">
+
+    <Grid>
+        <DataGrid x:Name="DataGridAccounting" HorizontalAlignment="Left" Height="450" VerticalAlignment="Top" Width="800" IsReadOnly="True" IsSynchronizedWithCurrentItem="True" AutoGenerateColumns="False">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding CustomerNr}" Header="Kunden Nr."/>
+                <DataGridTextColumn Binding="{Binding Name}" Header="Name"/>
+                <DataGridTextColumn Binding="{Binding Street}" Header="Strasse"/>
+                <DataGridTextColumn Binding="{Binding ZIP}" Header="PLZ"/>
+                <DataGridTextColumn Binding="{Binding City}" Header="Ort"/>
+                <DataGridTextColumn Binding="{Binding Country}" Header="Land"/>
+                <DataGridTextColumn Binding="{Binding InvoiceDate}" Header="Rechnungsdatum"/>
+                <DataGridTextColumn Binding="{Binding InvoiceNr}" Header="Rechnungs Nr."/>
+                <DataGridTextColumn Binding="{Binding InvoiceAmountNet}" Header="Rechnungsbetrag netto"/>
+                <DataGridTextColumn Binding="{Binding InvoiceAmountGross}" Header="Rechnungsbetrag brutto"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+</Page>

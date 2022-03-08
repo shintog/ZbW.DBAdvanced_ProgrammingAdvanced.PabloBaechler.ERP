@@ -12,6 +12,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Ac
         {
         }
 
+        public virtual DbSet<Accounting> Accountings { get; set; }
         public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<Article> Articles { get; set; }
         public virtual DbSet<ArticleClassification> ArticleClassifications { get; set; }
@@ -19,11 +20,19 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Ac
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
-        public virtual DbSet<MSSQL_TemporalHistoryFor_1525580473> MSSQL_TemporalHistoryFor_1525580473 { get; set; }
+        public virtual DbSet<Address_History> Address_History { get; set; }
+        public virtual DbSet<Article_History> Article_History { get; set; }
+        public virtual DbSet<ArticleClassification_History> ArticleClassification_History { get; set; }
+        public virtual DbSet<Customer_History> Customer_History { get; set; }
+        public virtual DbSet<Order_History> Order_History { get; set; }
+        public virtual DbSet<Position_History> Position_History { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Accounting>()
+                .Property(e => e.ZIP)
+                .HasPrecision(18, 0);
+
             modelBuilder.Entity<Address>()
                 .Property(e => e.ZIP)
                 .HasPrecision(4, 0);
@@ -71,6 +80,10 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Ac
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Customer>()
+                .Property(e => e.Password)
+                .IsFixedLength();
+
+            modelBuilder.Entity<Customer>()
                 .HasMany(e => e.Orders)
                 .WithRequired(e => e.Customer1)
                 .WillCascadeOnDelete(false);
@@ -85,9 +98,26 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Ac
                 .Property(e => e.Amount)
                 .HasPrecision(18, 0);
 
-            modelBuilder.Entity<MSSQL_TemporalHistoryFor_1525580473>()
+            modelBuilder.Entity<Address_History>()
                 .Property(e => e.ZIP)
                 .HasPrecision(4, 0);
+
+            modelBuilder.Entity<Article_History>()
+                .Property(e => e.PurchasingPrice)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<Article_History>()
+                .Property(e => e.SalesPrice)
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<Customer_History>()
+                .Property(e => e.Password)
+                .IsFixedLength();
+
+            modelBuilder.Entity<Position_History>()
+                .Property(e => e.Amount)
+                .HasPrecision(18, 0);
+            
         }
     }
 }

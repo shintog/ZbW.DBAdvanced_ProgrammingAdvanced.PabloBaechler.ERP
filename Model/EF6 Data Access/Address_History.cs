@@ -6,39 +6,43 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Ac
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("Address")]
-    public partial class Address
+    public partial class Address_History
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Address()
-        {
-            Customers = new HashSet<Customer>();
-        }
-
-        [Required]
+        [Key]
+        [Column(Order = 0)]
         [StringLength(2)]
         public string AddressKey { get; set; }
 
         [Key]
+        [Column(Order = 1)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int AddressNr { get; set; }
 
-        [Required]
+        [Key]
+        [Column(Order = 2)]
         [StringLength(50)]
         public string Street { get; set; }
 
-        [Required]
+        [Key]
+        [Column(Order = 3)]
         [StringLength(50)]
         public string Number { get; set; }
 
-        [Column(TypeName = "numeric")]
+        [Key]
+        [Column(Order = 4, TypeName = "numeric")]
         public decimal ZIP { get; set; }
 
-        [Required]
+        [Key]
+        [Column(Order = 5)]
         [StringLength(50)]
         public string City { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Customer> Customers { get; set; }
+        [Key]
+        [Column(Order = 6, TypeName = "datetime2")]
+        public DateTime SysStartTime { get; set; }
+
+        [Key]
+        [Column(Order = 7, TypeName = "datetime2")]
+        public DateTime SysEndTime { get; set; }
     }
 }

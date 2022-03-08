@@ -58,6 +58,8 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             }
         }
 
+        //public List<Object> YearOverYear => Parent.DataAccess.YearOverYear.ToList();
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged(String info)

@@ -52,7 +52,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Label x:Name="lblError" Content="" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="7" Width="585" BorderBrush="#FFB92323" Foreground="#FFB92323" BorderThickness="1" Visibility="Hidden"/>
+        <Label x:Name="lblError" Content="" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="7" Width="585" Foreground="#FFB92323" Visibility="Hidden"/>
         <Grid x:Name="grdPositionData" Grid.ColumnSpan="7" Grid.Column="2" HorizontalAlignment="Left" Height="55" Grid.Row="7" VerticalAlignment="Top" Width="585" Background="#FFF0F0FF" IsEnabled="False">
             <Grid.RowDefinitions>
                 <RowDefinition Height="25"/>

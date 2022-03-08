@@ -23,10 +23,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Viewbox x:Name="vwbLogo" HorizontalAlignment="Left" Height="442" Margin="0,0,-2,0" VerticalAlignment="Top" Width="585" Grid.Column="1">
-            <Image x:Name="imgLogo" Height="442" Width="585" Source="logo-zbw.png"/>
-
-        </Viewbox>
+        <DataGrid x:Name="DataGridYearOverYear" Grid.Column="1" HorizontalAlignment="Left" Height="450" VerticalAlignment="Top" Width="590"/>
 
     </Grid>
 </Page>

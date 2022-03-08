@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
 
             this.OrderData = new Order();
             this.CurrentSearchMask = new SearchPage();
-            this.Error = Visibility.Hidden;
+            this.ErrorList = new Dictionary<string, string>();
         }
 
         public MainViewModel Parent;
@@ -40,6 +41,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(Date));
                 NotifyPropertyChanged(nameof(CustomerSelectedItem));
                 NotifyPropertyChanged(nameof(Positions));
+                NotifyPropertyChanged(nameof(HistoryList));
             }
         }
 
@@ -72,6 +74,15 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set
             {
                 OrderData.Date = value;
+
+                ErrorList.Remove(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Date) + ": ");
+                if (value == new DateTime())
+                {
+                    ErrorList.Add(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Date) + ": ", Parent.ListOfErrors[nameof(Parent.OrderViewModel) + "." + nameof(Parent.OrderViewModel.Date)]);
+                }
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
+
                 NotifyPropertyChanged(nameof(Date));
             }
         }
@@ -79,7 +90,6 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         public Dictionary<String, String> Customer
         {
             get { return DataAccess.Customers.ToDictionary(a => a.CustomerKey + a.CustomerNr, a => a.Name); }
-            set { NotifyPropertyChanged(nameof(Customer)); }
         }
 
         public KeyValuePair<String, String> CustomerSelectedItem
@@ -96,18 +106,34 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             }
             set
             {
-                OrderData.Customer1 = DataAccess.Customers.First(c => c.CustomerKey + c.CustomerNr == value.Key);
-                OrderData.CustomerNr = int.Parse(value.Key.Substring(2));
+                OrderData.Customer1 = value.Key != "" ? DataAccess.Customers.First(c => c.CustomerKey + c.CustomerNr == value.Key) : new Customer();
+                OrderData.CustomerNr = int.Parse(value.Key != "" ? value.Key.Substring(2) : "0");
                 OrderData.Customer = "CU";
                 CustomerValue = value.Value;
+
+
+                ErrorList.Remove(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.CustomerSelectedItem) + ": ");
+                if (value.Key == "")
+                {
+                    ErrorList.Add(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.CustomerSelectedItem) + ": ", Parent.ListOfErrors[nameof(Parent.OrderViewModel) + "." + nameof(Parent.OrderViewModel.CustomerSelectedItem)]);
+                }
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
+
                 NotifyPropertyChanged(nameof(CustomerSelectedItem));
             }
         }
 
         public Dictionary<int, String> Article
         {
-            get { return DataAccess.Articles.ToDictionary(a => a.ArticleNr, a => a.Name); }
-            set { NotifyPropertyChanged(nameof(Article)); }
+            get
+            {
+
+                Dictionary<int, String> ListDictionary = new Dictionary<int, String>();
+                ListDictionary.Add(0, null);
+                ListDictionary.AddRange(DataAccess.Articles.ToDictionary(a => a.ArticleNr, a => a.Name));
+                return ListDictionary;
+            }
         }
 
         public KeyValuePair<int, String> ArticleSelectedItem
@@ -124,18 +150,34 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             }
             set
             {
-                OrderData.Positions.First(p => p.PositionNr == Position).Article = value.Key;
-                OrderData.Positions.First(p => p.PositionNr == Position).Article1 = DataAccess.Articles.First(a => a.ArticleNr == value.Key);
+                if (Position > 0)
+                {
+                    OrderData.Positions.First(p => p.PositionNr == Position).Article = value.Key;
+                    OrderData.Positions.First(p => p.PositionNr == Position).Article1 = value.Key > 0
+                        ? DataAccess.Articles.First(a => a.ArticleNr == value.Key)
+                        : new Article();
+
+
+                    ErrorList.Remove(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Positions) + Position + ": ");
+                    if (Amount == 0 || value.Key == 0)
+                    {
+                        ErrorList.Add(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Positions) + Position + ": ", Parent.ListOfErrors[nameof(Parent.OrderViewModel) + "." + nameof(Parent.OrderViewModel.Positions)] + Position);
+                    }
+                    NotifyPropertyChanged(nameof(CurrentError));
+                    NotifyPropertyChanged(nameof(Error));
+                }
+
                 NotifyPropertyChanged(nameof(Positions));
                 NotifyPropertyChanged(nameof(PositionsSelectedItem));
                 NotifyPropertyChanged(nameof(ArticleValue));
                 NotifyPropertyChanged(nameof(ArticleSelectedItem));
+         
             }
         }
-        
-        private String ArticleValue
+
+        public String ArticleValue
         {
-            get { return DataAccess.Articles.First(a => a.ArticleNr == ArticleSelectedItem.Key).Designation; }
+            get { return ArticleSelectedItem.Key > 0 ? DataAccess.Articles.First(a => a.ArticleNr == ArticleSelectedItem.Key).Designation : ""; }
         }
 
         public Decimal Amount
@@ -150,11 +192,23 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             }
             set
             {
-                OrderData.Positions.First(p => p.PositionNr == Position).Amount = value;
-                int savePosition = Position;
-                NotifyPropertyChanged(nameof(Amount));
-                NotifyPropertyChanged(nameof(Positions));
-                PositionsSelectedItem = OrderData.Positions.First(p => p.PositionNr == savePosition);
+                if (OrderData.Positions.Count > 0)
+                {
+                    OrderData.Positions.First(p => p.PositionNr == Position).Amount = value;
+                    int savePosition = Position;
+
+                    ErrorList.Remove(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Positions) + Position + ": ");
+                    if (value == 0 || ArticleSelectedItem.Key == 0)
+                    {
+                        ErrorList.Add(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Positions) + Position + ": ", Parent.ListOfErrors[nameof(Parent.OrderViewModel) + "." + nameof(Parent.OrderViewModel.Positions)] + Position);
+                    }
+                    NotifyPropertyChanged(nameof(CurrentError));
+                    NotifyPropertyChanged(nameof(Error));
+
+                    NotifyPropertyChanged(nameof(Amount));
+                    NotifyPropertyChanged(nameof(Positions));
+                    PositionsSelectedItem = OrderData.Positions.First(p => p.PositionNr == savePosition);
+                }
             }
         }
 
@@ -181,13 +235,16 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             get { return _positionsSelectedItem; }
             set
             {
-                _positionsSelectedItem = value;
-                Position = value.PositionNr;
-                SetPositionEdit = true;
-                NotifyPropertyChanged(nameof(PositionsSelectedItem));
-                NotifyPropertyChanged(nameof(Article));
-                NotifyPropertyChanged(nameof(ArticleSelectedItem));
-                NotifyPropertyChanged(nameof(Amount));
+                if (value != null && ErrorList.Count(e => e.Key == nameof(Parent.OrderViewModel.Positions) + ": ") == 0)
+                {
+                    _positionsSelectedItem = value;
+                    Position = value.PositionNr;
+                    SetPositionEdit = true;
+                    NotifyPropertyChanged(nameof(PositionsSelectedItem));
+                    NotifyPropertyChanged(nameof(Article));
+                    NotifyPropertyChanged(nameof(ArticleSelectedItem));
+                    NotifyPropertyChanged(nameof(Amount));
+                }
             }
         }
 
@@ -201,7 +258,12 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(Position));
             }
         }
-        
+
+        public List<Position_History> HistoryList
+        {
+            get { return OrderData != null && OrderData.OrderNr != 0 ? DataAccess.Position_History.Where(h => h.Order == OrderData.OrderNr).ToList() : new List<Position_History>(); }
+        }
+
         public Dictionary<int, String> ItemList
         {
             get
@@ -245,34 +307,30 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 OrderData = DataAccess.Orders.First(o => o.OrderNr == value.Key);
                 SetEdit = false;
                 NotifyPropertyChanged(nameof(SelectedItem));
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
             }
         }
 
-        private Dictionary<Int32, String> _errorList;
-
-        public Dictionary<Int32, String> ErrorList
+        private Dictionary<String, String> _errorList;
+        public Dictionary<String, String> ErrorList
         {
             get { return _errorList; }
             set
             {
                 _errorList = value;
-                if (_errorList.Count > 0)
-                    Error = Visibility.Visible;
-                else
-                    Error = Visibility.Hidden;
                 NotifyPropertyChanged(nameof(ErrorList));
             }
         }
 
-        private Visibility _error;
+        public String CurrentError
+        {
+            get { return _errorList.Count > 0 ? _errorList.FirstOrDefault(e => e.Key.StartsWith(OrderNr.ToString())).Value : ""; }
+        }
+
         public Visibility Error
         {
-            get { return _error; }
-            set
-            {
-                _error = value;
-                NotifyPropertyChanged(nameof(Error));
-            }
+            get { return _errorList.Count > 0 ? Visibility.Visible : Visibility.Hidden; }
         }
 
         private bool _saveData;
@@ -290,8 +348,11 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                     DataAccess.SaveChanges();
                     foreach (var element in positionList)
                     {
+                        element.Order = OrderData.OrderNr;
+                        element.Order1 = OrderData;
                         DataAccess.Positions.AddOrUpdate(element);
                     }
+                    
                     DataAccess.SaveChanges();
 
                     Parent.DataAccess = DataAccess;
@@ -310,6 +371,17 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 {
                     DataAccess.Orders.Remove(OrderData);
                     DataAccess.SaveChanges();
+
+                    ErrorList.Remove(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Customer) + ": ");
+                    ErrorList.Remove(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Date) + ": ");
+                    for (int i = 1; i <= Positions.Count; i++)
+                    {
+                        ErrorList.Remove(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Positions) + i + ": ");
+                    }
+
+                    NotifyPropertyChanged(nameof(CurrentError));
+                    NotifyPropertyChanged(nameof(Error));
+
                     Parent.DataAccess = DataAccess;
                     NotifyPropertyChanged(nameof(ItemList));
                     SetNew = true;
@@ -325,7 +397,23 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 if (value)
                 {
-                    OrderData.Date = DateTime.Today;
+                    Order newOrder = new Order();
+                    newOrder.Date = DateTime.Today;
+                    newOrder.Positions = new List<Position>();
+                    OrderData = newOrder;
+                    Position = 0;
+                    CustomerSelectedItem = new KeyValuePair<string, string>("", null);
+                    ArticleSelectedItem = new KeyValuePair<int, string>(0, null);
+                    Amount = 0;
+
+                    ErrorList = new Dictionary<string, string>();
+                    ErrorList.Add(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.CustomerSelectedItem) + ": ", Parent.ListOfErrors[nameof(Parent.OrderViewModel) + "." + nameof(Parent.OrderViewModel.CustomerSelectedItem)]);
+                    ErrorList.Add(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Date) + ": ", Parent.ListOfErrors[nameof(Parent.OrderViewModel) + "." + nameof(Parent.OrderViewModel.Date)]);
+                    
+                    NotifyPropertyChanged(nameof(CurrentError));
+                    NotifyPropertyChanged(nameof(Error));
+
+                    SetPositionEdit = false;
                     NotifyPropertyChanged(nameof(OrderNr));
                     NotifyPropertyChanged(nameof(Date));
                 }
@@ -356,15 +444,27 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         
         public void AddPosition()
         {
-            Position NewPosition = new Position();
-            NewPosition.Order = OrderData.OrderNr;
+            if (ErrorList.Count(e => e.Key == nameof(Parent.OrderViewModel.Positions) + ": ") == 0)
+            {
+                Position NewPosition = new Position();
+                NewPosition.Order = OrderData.OrderNr;
 
-            NewPosition.PositionNr = OrderData.Positions != null && OrderData.Positions.Count() != 0
-                ? OrderData.Positions.Select(p => p.PositionNr).Max() + 1
-                : 1;
-            OrderData.Positions.Add(NewPosition);
-            PositionsSelectedItem = NewPosition;
-            SetPositionEdit = true;
+                NewPosition.PositionNr = OrderData.Positions != null && OrderData.Positions.Count() != 0
+                    ? OrderData.Positions.Select(p => p.PositionNr).Max() + 1
+                    : 1;
+                OrderData.Positions.Add(NewPosition);
+
+                PositionsSelectedItem = NewPosition;
+                ArticleSelectedItem = new KeyValuePair<int, string>(0, null);
+                SetPositionEdit = true;
+                
+                ErrorList.Remove(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Positions) + Position + ": ");
+
+                ErrorList.Add(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Positions) + Position + ": ",
+                    Parent.ListOfErrors[nameof(Parent.OrderViewModel) + "." + nameof(Parent.OrderViewModel.Positions)] + Position);
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
+            }
         }
 
         public void SubstractPosition()
@@ -373,9 +473,10 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 OrderData.Positions.Remove(OrderData.Positions.First(p => p.PositionNr == Position));
                 NotifyPropertyChanged(nameof(Positions));
-
+                ArticleSelectedItem = new KeyValuePair<int, string>(0, null);
                 PositionsSelectedItem = OrderData.Positions.First();
 
+                ErrorList.Remove(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Positions) + Position + ": ");
                 if (OrderData.Positions.Count == 0)
                     SetPositionEdit = false;
             }

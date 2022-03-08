@@ -6,30 +6,33 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Ac
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("Order")]
-    public partial class Order
+    public partial class Order_History
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Order()
-        {
-            Positions = new HashSet<Position>();
-        }
-
         [Key]
+        [Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int OrderNr { get; set; }
 
+        [Key]
+        [Column(Order = 1)]
         public DateTime Date { get; set; }
 
-        [Required]
+        [Key]
+        [Column(Order = 2)]
         [StringLength(2)]
         public string Customer { get; set; }
 
+        [Key]
+        [Column(Order = 3)]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int CustomerNr { get; set; }
-        
-        public virtual Customer Customer1 { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Position> Positions { get; set; }
+        [Key]
+        [Column(Order = 4, TypeName = "datetime2")]
+        public DateTime SysStartTime { get; set; }
+
+        [Key]
+        [Column(Order = 5, TypeName = "datetime2")]
+        public DateTime SysEndTime { get; set; }
     }
 }

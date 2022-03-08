@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data.Entity;
 using System.Data.Entity.Migrations;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms.VisualStyles;
 using Microsoft.VisualStudio.Utilities.Internal;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Access;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
@@ -25,8 +19,8 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
 
             this.AddressData = new Address();
             this.CurrentSearchMask = new SearchPage();
-            this.Error = Visibility.Hidden;
             this.SetEdit = false;
+            this.ErrorList = new Dictionary<string, string>();
 
         }
 
@@ -46,6 +40,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(Number));
                 NotifyPropertyChanged(nameof(ZIP));
                 NotifyPropertyChanged(nameof(City));
+                NotifyPropertyChanged(nameof(HistoryList));
             }
         }
 
@@ -83,6 +78,16 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set
             {
                 AddressData.Street = value;
+
+                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Street) + ": ");
+                if (value == "")
+                {
+                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Street) + ": ", Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.Street)]);
+                }
+
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
+
                 NotifyPropertyChanged(nameof(Street));
             }
         }
@@ -93,6 +98,16 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set
             {
                 AddressData.Number = value;
+                
+                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Number) + ": ");
+                if (value == "")
+                {
+                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Number) + ": ", Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.Number)]);
+                }
+
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
+
                 NotifyPropertyChanged(nameof(Number));
             }
         }
@@ -103,6 +118,16 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set
             {
                 AddressData.ZIP = value;
+                
+                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.ZIP) + ": ");
+                if (value == 0)
+                {
+                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.ZIP) + ": ", Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.ZIP)]);
+                }
+
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
+
                 NotifyPropertyChanged(nameof(ZIP));
             }
         }
@@ -113,6 +138,16 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set
             {
                 AddressData.City = value;
+                
+                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.City) + ": ");
+                if (value == "")
+                {
+                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.City) + ": ", Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.City)]);
+                }
+
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
+
                 NotifyPropertyChanged(nameof(City));
             }
         }
@@ -151,6 +186,15 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 {
                     DataAccess.Addresses.Remove(AddressData);
                     DataAccess.SaveChanges();
+
+                    ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Street) + ": ");
+                    ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Number) + ": ");
+                    ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.ZIP) + ": ");
+                    ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.City) + ": ");
+
+                    NotifyPropertyChanged(nameof(CurrentError));
+                    NotifyPropertyChanged(nameof(Error));
+
                     Parent.DataAccess = DataAccess;
                     NotifyPropertyChanged(nameof(ItemList));
                     SetNew = true;
@@ -168,6 +212,14 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 {
                     AddressData = new Address();
                     AddressData.AddressKey = "CU";
+                    ErrorList = new Dictionary<string, string>();
+                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Street) + ": ", Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.Street)]);
+                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Number) + ": ", Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.Number)]);
+                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.ZIP) + ": ", Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.ZIP)]);
+                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.City) + ": ", Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.City)]);
+
+                    NotifyPropertyChanged(nameof(CurrentError));
+                    NotifyPropertyChanged(nameof(Error));
                 }
             }
         }
@@ -178,9 +230,14 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             get { return _setEdit; }
             set
             {
-                _setEdit = value && AddressNr == "CU0";
+                _setEdit = value;
                 NotifyPropertyChanged(nameof(SetEdit));
             }
+        }
+
+        public List<Address_History> HistoryList
+        {
+            get { return AddressData != null && AddressData.AddressNr != 0 ? DataAccess.Address_History.Where(h => h.AddressNr == AddressData.AddressNr).ToList() : new List<Address_History>(); }
         }
 
         public Dictionary<String, String> ItemList
@@ -234,34 +291,31 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 AddressData = DataAccess.Addresses.First(a => a.AddressKey + a.AddressNr == value.Key);
                 SetEdit = false;
                 NotifyPropertyChanged(nameof(SelectedItem));
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
             }
         }
 
-        private Dictionary<Int32, String> _errorList;
+        private Dictionary<String, String> _errorList;
 
-        public Dictionary<Int32, String> ErrorList
+        public Dictionary<String, String> ErrorList
         {
             get { return _errorList; }
             set
             {
                 _errorList = value;
-                if (_errorList.Count > 0)
-                    Error = Visibility.Visible;
-                else
-                    Error = Visibility.Hidden;
                 NotifyPropertyChanged(nameof(ErrorList));
             }
         }
 
-        private Visibility _error;
+        public String CurrentError
+        {
+            get { return _errorList.Count > 0 ? _errorList.FirstOrDefault(e => e.Key.StartsWith(AddressNr.ToString())).Value : ""; }
+        }
+
         public Visibility Error
         {
-            get { return _error; }
-            set
-            {
-                _error = value;
-                NotifyPropertyChanged(nameof(Error));
-            }
+            get { return _errorList.Count > 0 ? Visibility.Visible : Visibility.Hidden; }
         }
 
 

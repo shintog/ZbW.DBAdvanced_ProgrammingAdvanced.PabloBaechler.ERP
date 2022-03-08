@@ -32,6 +32,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             this.ArticleViewModel = new ArticleViewModel();
             this.ArticleClassificationViewModel = new ArticleClassificationViewModel();
             this.OrderViewModel = new OrderViewModel();
+            this.AccountingViewModel = new AccountingViewModel();
 
             ApplicationViewModel.Parent = this;
             CustomerViewModel.Parent = this;
@@ -39,6 +40,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             ArticleViewModel.Parent = this;
             ArticleClassificationViewModel.Parent = this;
             OrderViewModel.Parent = this;
+            AccountingViewModel.Parent = this;
 
             this.DataAccess = new AuftragsverwaltungDataAccess();
 
@@ -55,12 +57,14 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             get { return _dataAccess; }
             set
             {
-                _dataAccess = value;
+                _dataAccess = new AuftragsverwaltungDataAccess();
                 CustomerViewModel.DataAccess = _dataAccess;
                 AddressViewModel.DataAccess = _dataAccess;
                 ArticleViewModel.DataAccess = _dataAccess;
                 ArticleClassificationViewModel.DataAccess = _dataAccess;
-                OrderViewModel.DataAccess = _dataAccess;
+                OrderViewModel.DataAccess = _dataAccess; 
+                AccountingViewModel.DataAccess = _dataAccess;
+
             }
         }
 
@@ -133,6 +137,18 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 _orderViewModel = value;
                 NotifyPropertyChanged(nameof(OrderViewModel));
+            }
+        }
+
+        private AccountingViewModel _accountingViewModel;
+
+        public AccountingViewModel AccountingViewModel
+        {
+            get { return _accountingViewModel; }
+            set
+            {
+                _accountingViewModel = value;
+                NotifyPropertyChanged(nameof(AccountingViewModel));
             }
         }
 
@@ -222,6 +238,13 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
 
         }
 
+        private Visibility _historyVisibility;
+        public Visibility HistoryVisibility
+        {
+            get { return _historyVisibility; }
+            set { _historyVisibility = value; }
+        }
+
         public void SetNew() 
         {
             Type WindowType = CurrentWindow.GetType();
@@ -279,31 +302,39 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             if (WindowType == typeof(AddressPage))
             {
                 AddressViewModel.SaveData = true;
-                AddressViewModel.SetEdit = false;
+                if(AddressViewModel.ErrorList.Count == 0)
+                    AddressViewModel.SetEdit = false;
             }
 
             if (WindowType == typeof(ArticleClassificationPage))
             {
                 ArticleClassificationViewModel.SaveData = true;
-                ArticleClassificationViewModel.SetEdit = false;
+                if (ArticleClassificationViewModel.ErrorList.Count == 0)
+                    ArticleClassificationViewModel.SetEdit = false;
             }
 
             if (WindowType == typeof(ArticlePage))
             {
                 ArticleViewModel.SaveData = true;
-                ArticleViewModel.SetEdit = false;
+                if (ArticleViewModel.ErrorList.Count == 0)
+                    ArticleViewModel.SetEdit = false;
             }
 
             if (WindowType == typeof(CustomerPage))
             {
+                if(((CustomerPage)CurrentWindow).pwbPassword.Password != "" && ((CustomerPage)CurrentWindow).pwbPassword.Password == ((CustomerPage)CurrentWindow).pwbPasswordSec.Password)
+                    CustomerViewModel.SavePassword(((CustomerPage)CurrentWindow).pwbPassword.Password);
+              
                 CustomerViewModel.SaveData = true;
-                CustomerViewModel.SetEdit = false;
+                if (CustomerViewModel.ErrorList.Count == 0)
+                    CustomerViewModel.SetEdit = false;
             }
 
             if (WindowType == typeof(OrderPage))
             {
                 OrderViewModel.SaveData = true;
-                OrderViewModel.SetEdit = false;
+                if (OrderViewModel.ErrorList.Count == 0)
+                    OrderViewModel.SetEdit = false;
             }
         }
         public void DoDelete()
@@ -341,13 +372,68 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         }
 
         public void DoAbort()
-        {
+        {   
             CurrentWindow = new ApplicationPage();
         }
+
+        private Page _behindHistory;
         public void ShowHistory()
-        {
-            CurrentWindow = new ApplicationPage();
+        {   
+            Type WindowType = CurrentWindow.GetType();
+            if (WindowType == typeof(HistoryPage))
+            {
+                CurrentWindow = _behindHistory;
+            }
+            else if (WindowType != typeof(ApplicationPage) && WindowType != typeof(AccountingPage))
+            {
+                _behindHistory = CurrentWindow;
+                CurrentWindow = new HistoryPage();
+            }
         }
+
+        public Dictionary<String, String> ListOfErrors => new Dictionary<String, String>()
+        {
+            {nameof(CustomerViewModel) + "." + nameof(CustomerViewModel.Name), "Der Name muss befüllt sein"},
+            {
+                nameof(CustomerViewModel) + "." + nameof(CustomerViewModel.AddressSelectedItem),
+                "Wählen sie eine Adresse aus"
+            },
+            {nameof(CustomerViewModel) + "." + nameof(CustomerViewModel.EMail), "Die E-Mail Adresse muss befüllt sein"},
+            {nameof(CustomerViewModel) + "." + nameof(CustomerViewModel.Website), "Die Webseite muss befüllt sein"},
+            {nameof(AddressViewModel) + "." + nameof(AddressViewModel.Street), "Die Strasse muss befüllt sein"},
+            {nameof(AddressViewModel) + "." + nameof(AddressViewModel.Number), "Die Strassennummer muss befüllt sein"},
+            {nameof(AddressViewModel) + "." + nameof(AddressViewModel.ZIP), "Die Postleitzahl muss befüllt sein"},
+            {nameof(AddressViewModel) + "." + nameof(AddressViewModel.City), "Der Ort muss befüllt sein"},
+            {nameof(ArticleViewModel) + "." + nameof(ArticleViewModel.Name), "Die Name muss befüllt sein"},
+            {
+                nameof(ArticleViewModel) + "." + nameof(ArticleViewModel.Designation),
+                "Die Bezeichnnung muss befüllt sein"
+            },
+            {nameof(ArticleViewModel) + "." + nameof(ArticleViewModel.ClassificationSelectedItem), "Die Klassifikation muss befüllt sein"},
+            {
+                nameof(ArticleViewModel) + "." + nameof(ArticleViewModel.PurchasingPrice),
+                "Der Einkaufspreis muss befüllt sein"
+            },
+            {
+                nameof(ArticleViewModel) + "." + nameof(ArticleViewModel.PPCurrencySelectedItem),
+                "Wählen sie eine Einkaufspreis Währung aus"
+            },
+            {
+                nameof(ArticleViewModel) + "." + nameof(ArticleViewModel.SalesPrice),
+                "Der Verkaufspreis muss befüllt sein"
+            },
+            {
+                nameof(ArticleViewModel) + "." + nameof(ArticleViewModel.SPCurrencySelectedItem),
+                "Wählen sie eine Verkaufspreis Währung aus"
+            },
+            {
+                nameof(ArticleClassificationViewModel) + "." + nameof(ArticleClassificationViewModel.Name),
+                "Der Name muss befüllt sein"
+            },
+            {nameof(OrderViewModel) + "." + nameof(OrderViewModel.CustomerSelectedItem), "Wählen sie einen Kunden aus"},
+            {nameof(OrderViewModel) + "." + nameof(OrderViewModel.Date), "Setzen sie ein Auftragsdatum"},
+            {nameof(OrderViewModel) + "." + nameof(OrderViewModel.Positions), "Ergänzen sie alle Postionsdaten zu Position:"}
+        };
 
         private ICommand _clickNewCommand;
         public ICommand ClickNewCommand

@@ -35,8 +35,10 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Support
                 {"ARTI", "Artikelstamm"},
                 {"ARTC", "Artikel-Klassifizierung"},
                 {"ORDE", "Bestellwesen"},
+                {"ACCO", "Rechnungswesen"}
             };
         }
+
 
         public static Dictionary<string, Page> SetApplicationPageListDictionary()
         {
@@ -46,7 +48,9 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Support
                 {"ADDR", new AddressPage()},
                 {"ARTI", new ArticlePage()},
                 {"ARTC", new ArticleClassificationPage()},
-                {"ORDE", new OrderPage()}
+                {"ORDE", new OrderPage()},
+                {"ACCO", new AccountingPage()},
+                {"HIST", new HistoryPage()}
             };
         }
     }

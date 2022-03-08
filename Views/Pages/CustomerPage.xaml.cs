@@ -48,9 +48,9 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             //Webseite setzen
             BindToElement("Website", BindingMode.TwoWay, txtWebsite, TextBox.TextProperty);
             //Error Sichtbarkeit setzen
-            BindToElement("Error", BindingMode.TwoWay, lblError, Label.VisibilityProperty);
+            BindToElement("Error", BindingMode.OneWay, lblError, Label.VisibilityProperty);
             //Error Fehlerliste setzen
-            BindToElement("ErrorList", BindingMode.OneWay, lblError, Label.ContentProperty);
+            BindToElement("CurrentError", BindingMode.OneWay, lblError, Label.ContentProperty);
             //BearbeitungsModus setzen
             BindToElement("SetEdit", BindingMode.OneWay, txtName, TextBox.IsEnabledProperty);
             BindToElement("SetEdit", BindingMode.OneWay, cmbAddress, ComboBox.IsEnabledProperty);
@@ -65,5 +65,14 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             Binding bindingItem = SupportingTools.GenerateBinding(DataContext, path, mode, element, property);
             BindingOperations.SetBinding(element, property, bindingItem);
         }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (pwbPassword.Password != "" && pwbPassword.Password == pwbPasswordSec.Password)
+                imgPasswordCheck.Source = new BitmapImage(new Uri(@"/Resources/Icons/Checked.png", UriKind.Relative));
+            else
+                imgPasswordCheck.Source = new BitmapImage(new Uri(@"/Resources/Icons/Unchecked.png", UriKind.Relative));
+        }
+        
     }
 }

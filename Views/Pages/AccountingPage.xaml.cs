@@ -18,29 +18,23 @@ using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels;
 namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
 {
     /// <summary>
-    /// Interaction logic for ApplicationPage.xaml
+    /// Interaction logic for AccountingPage.xaml
     /// </summary>
-    public partial class ApplicationPage : Page
+    public partial class AccountingPage : Page
     {
-        public ApplicationPage()
+        public AccountingPage()
         {
             InitializeComponent();
-            DataContext = ((MainViewModel)((MainWindow)App.Current.MainWindow).DataContext).ApplicationViewModel; 
+            DataContext = ((MainViewModel)((MainWindow)App.Current.MainWindow).DataContext).AccountingViewModel;
             SetBindings();
         }
 
         public void SetBindings()
         {
             //ListView Applikationsliste setzen
-            BindToElement("CurrentApplications", BindingMode.OneWay, lsvApplications, ListView.ItemsSourceProperty);
-
-            //ListView Rückgabewert setzen
-            BindToElement("SelectedItem", BindingMode.OneWayToSource, lsvApplications, ListView.SelectedItemProperty);
-
-            //Jahresvergleich setzen
-            BindToElement("YearOverYear", BindingMode.OneWay, lsvApplications, DataGrid.ItemsSourceProperty);
+            BindToElement("Accountings", BindingMode.OneWay, DataGridAccounting, DataGrid.ItemsSourceProperty);
         }
-        
+
         public void BindToElement(string path, BindingMode mode, DependencyObject element, DependencyProperty property)
         {
             //Bindings für die verschiedenen Elemente setzen

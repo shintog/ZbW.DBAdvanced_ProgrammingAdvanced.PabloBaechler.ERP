@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.VisualStudio.Utilities.Internal;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Access;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
 
@@ -20,7 +21,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
 
             this.ClassificationData = new ArticleClassification();
             this.CurrentSearchMask = new SearchPage();
-            this.Error = Visibility.Hidden;
+            this.ErrorList = new Dictionary<string, string>();
 
             NotifyPropertyChanged(nameof(ParentClassification));
         }
@@ -40,6 +41,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(ParentClassification));
                 NotifyPropertyChanged(nameof(ParentSelectedItem));
                 NotifyPropertyChanged(nameof(Name));
+                NotifyPropertyChanged(nameof(HistoryList));
             }
         }
         
@@ -77,7 +79,10 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         {
             get
             {
-                return DataAccess.ArticleClassifications.Where(a => a.ClassificationNr != ClassificationNr).ToDictionary(a => a.ClassificationNr, a => a.Name) ;
+                Dictionary<int, String> ListDictionary = new Dictionary<int, String>();
+                ListDictionary.Add(0, null);
+                ListDictionary.AddRange(DataAccess.ArticleClassifications.Where(a => a.ClassificationNr != ClassificationNr).ToDictionary(a => a.ClassificationNr, a => a.Name));
+                return ListDictionary;
             }
         }
         
@@ -118,8 +123,20 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set
             {
                 ClassificationData.Name = value;
+
+                ErrorList.Remove(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) + ": ");
+                if (value == "")
+                {
+                    ErrorList.Add(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) + ": ", Parent.ListOfErrors[nameof(Parent.ArticleClassificationViewModel) + "." + nameof(Parent.ArticleClassificationViewModel.Name)]);
+                }
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
                 NotifyPropertyChanged(nameof(Name));
             }
+        }
+        public List<ArticleClassification_History> HistoryList
+        {
+            get { return ClassificationData != null && ClassificationData.ClassificationNr != 0 ? DataAccess.ArticleClassification_History.Where(h => h.ClassificationNr == ClassificationData.ClassificationNr).ToList() : new List<ArticleClassification_History>(); }
         }
         public Dictionary<int, String> ItemList
         {
@@ -160,34 +177,31 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 ClassificationData = DataAccess.ArticleClassifications.First(a => a.ClassificationNr == value.Key);
                 SetEdit = false;
                 NotifyPropertyChanged(nameof(SelectedItem));
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
             }
         }
 
-        private Dictionary<Int32, String> _errorList;
+        private Dictionary<String, String> _errorList;
 
-        public Dictionary<Int32, String> ErrorList
+        public Dictionary<String, String> ErrorList
         {
             get { return _errorList; }
             set
             {
                 _errorList = value;
-                if (_errorList.Count > 0)
-                    Error = Visibility.Visible;
-                else
-                    Error = Visibility.Hidden;
                 NotifyPropertyChanged(nameof(ErrorList));
             }
         }
 
-        private Visibility _error;
+        public String CurrentError
+        {
+            get { return _errorList.Count > 0 ? _errorList.FirstOrDefault(e => e.Key.StartsWith(ClassificationNr.ToString())).Value : ""; }
+        }
+
         public Visibility Error
         {
-            get { return _error; }
-            set
-            {
-                _error = value;
-                NotifyPropertyChanged(nameof(Error));
-            }
+            get { return _errorList.Count > 0 ? Visibility.Visible : Visibility.Hidden; }
         }
 
         private bool _saveData;
@@ -226,6 +240,11 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 {
                     DataAccess.ArticleClassifications.Remove(ClassificationData);
                     DataAccess.SaveChanges();
+
+                    ErrorList.Remove(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) + ": ");
+                    NotifyPropertyChanged(nameof(CurrentError));
+                    NotifyPropertyChanged(nameof(Error));
+
                     Parent.DataAccess = DataAccess;
                     NotifyPropertyChanged(nameof(ItemList));
                     SetNew = true;
@@ -243,6 +262,11 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 {
                     ClassificationData = new ArticleClassification();
                     ParentSelectedItem = new KeyValuePair<int, string>();
+
+                    ErrorList = new Dictionary<string, string>();
+                    ErrorList.Add(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) + ": ", Parent.ListOfErrors[nameof(Parent.ArticleClassificationViewModel) + "." + nameof(Parent.ArticleClassificationViewModel.Name)]);
+                    NotifyPropertyChanged(nameof(CurrentError));
+                    NotifyPropertyChanged(nameof(Error));
                 }
             }
         }

@@ -46,7 +46,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             //Error Sichtbarkeit setzen
             BindToElement("Error", BindingMode.OneWay, lblError, Label.VisibilityProperty);
             //Error Fehlerliste setzen
-            BindToElement("ErrorList", BindingMode.OneWay, lblError, Label.ContentProperty);
+            BindToElement("CurrentError", BindingMode.OneWay, lblError, Label.ContentProperty);
             //BearbeitungsModus setzen
             BindToElement("SetEdit", BindingMode.OneWay, txtStreet, TextBox.IsEnabledProperty);
             BindToElement("SetEdit", BindingMode.OneWay, txtNumber, TextBox.IsEnabledProperty);

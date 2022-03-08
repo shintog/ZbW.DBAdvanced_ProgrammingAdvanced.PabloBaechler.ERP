@@ -42,7 +42,7 @@
 
         <Label x:Name="lblName" Content="Name:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Width="80"/>
         <TextBox x:Name="txtName" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="7" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="lblError" Content="" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Grid.ColumnSpan="7" Width="585" BorderBrush="#FFB92323" Foreground="#FFB92323" BorderThickness="1" Visibility="Hidden"/>
+        <Label x:Name="lblError" Content="" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Grid.ColumnSpan="7" Width="585" Foreground="#FFB92323" Visibility="Hidden"/>
         <TreeView Grid.ColumnSpan="7" Grid.Column="2" HorizontalAlignment="Left" Height="325" Grid.Row="9" VerticalAlignment="Top" Width="585"/>
     </Grid>
 </Page>

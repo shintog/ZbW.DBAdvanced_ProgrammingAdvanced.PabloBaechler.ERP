@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Entity.Migrations;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.VisualStudio.Utilities.Internal;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Access;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
 
@@ -20,7 +22,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
 
             this.CustomerData = new Customer();
             this.CurrentSearchMask = new SearchPage();
-            this.Error = Visibility.Hidden;
+            this.ErrorList = new Dictionary<string, string>();
         }
 
         public MainViewModel Parent;
@@ -39,6 +41,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(AddressSelectedItem));
                 NotifyPropertyChanged(nameof(EMail));
                 NotifyPropertyChanged(nameof(Website));
+                NotifyPropertyChanged(nameof(HistoryList));
             }
         }
 
@@ -76,14 +79,27 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set
             {
                 CustomerData.Name = value;
+
+                ErrorList.Remove(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.Name) + ": ");
+                if (value == "")
+                {
+                    ErrorList.Add(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.Name) + ": ", Parent.ListOfErrors[nameof(Parent.CustomerViewModel) + "." + nameof(Parent.CustomerViewModel.Name)]);
+                }
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
                 NotifyPropertyChanged(nameof(Name));
             }
         }
         
         public Dictionary<String, String> Address
         {
-            get { return DataAccess.Addresses.ToDictionary(a => a.AddressKey + a.AddressNr, a => a.Street + " " + a.Number + ", " + a.ZIP + " " + a.City); }
-            set { NotifyPropertyChanged(nameof(Address)); }
+            get
+            {
+                Dictionary<String, String> ListDictionary = new Dictionary<String, String>();
+                ListDictionary.Add("", null);
+                ListDictionary.AddRange(DataAccess.Addresses.ToDictionary(a => a.AddressKey + a.AddressNr, a => a.Street + " " + a.Number + ", " + a.City + " " + a.ZIP));
+                return ListDictionary;
+            }
         }
         
         public KeyValuePair<String, String> AddressSelectedItem
@@ -94,16 +110,23 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
 
                 if (CustomerData != null && CustomerData.Address1 != null)
                     ItemKeyValue = new KeyValuePair<string, string>(CustomerData.Address1.AddressKey + CustomerData.Address1.AddressNr, CustomerData.Address1.Street + " " + CustomerData.Address1.Number + ", " + CustomerData.Address1.City + " " + CustomerData.Address1.ZIP);
-
+                
                 return ItemKeyValue;
             }
             set
             {
-
-                CustomerData.Address1 = value.Key == null ? new Address() : DataAccess.Addresses.First(a => a.AddressKey + a.AddressNr == value.Key);
+                CustomerData.Address1 = value.Key == null || value.Key == "" ? new Address() : DataAccess.Addresses.First(a => a.AddressKey + a.AddressNr == value.Key);
                 CustomerData.AddressNr = value.Key == null ? 0 : int.Parse(value.Key.Substring(2));
                 CustomerData.Address = "CU";
                 AddressValue = value.Value;
+                
+                ErrorList.Remove(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.AddressSelectedItem) + ": ");
+                if (value.Key == "")
+                {
+                    ErrorList.Add(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.AddressSelectedItem) + ": ", Parent.ListOfErrors[nameof(Parent.CustomerViewModel) + "." + nameof(Parent.CustomerViewModel.AddressSelectedItem)]);
+                }
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
                 NotifyPropertyChanged(nameof(AddressSelectedItem));
             }
         }
@@ -125,6 +148,14 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set
             {
                 CustomerData.EMail = value;
+                
+                ErrorList.Remove(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.EMail) + ": ");
+                if (value == "")
+                {
+                    ErrorList.Add(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.EMail) + ": ", Parent.ListOfErrors[nameof(Parent.CustomerViewModel) + "." + nameof(Parent.CustomerViewModel.EMail)]);
+                }
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
                 NotifyPropertyChanged(nameof(EMail));
             }
         }
@@ -135,8 +166,20 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set
             {
                 CustomerData.Website = value;
+                
+                ErrorList.Remove(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.Website) + ": ");
+                if (value == "")
+                {
+                    ErrorList.Add(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.Website) + ": ", Parent.ListOfErrors[nameof(Parent.CustomerViewModel) + "." + nameof(Parent.CustomerViewModel.Website)]);
+                }
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
                 NotifyPropertyChanged(nameof(Website));
             }
+        }
+        public List<Customer_History> HistoryList
+        {
+            get { return CustomerData != null && CustomerData.CustomerNr != 0 ? DataAccess.Customer_History.Where(h => h.CustomerNr == CustomerData.CustomerNr).ToList() : new List<Customer_History>(); }
         }
 
         public Dictionary<String, String> ItemList
@@ -183,34 +226,31 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 CustomerData = DataAccess.Customers.First(c => c.CustomerKey + c.CustomerNr == value.Key);
                 SetEdit = false;
                 NotifyPropertyChanged(nameof(SelectedItem));
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
             }
         }
 
-        private Dictionary<Int32, String> _errorList;
+        private Dictionary<String, String> _errorList;
 
-        public Dictionary<Int32, String> ErrorList
+        public Dictionary<String, String> ErrorList
         {
             get { return _errorList; }
             set
             {
                 _errorList = value;
-                if (_errorList.Count > 0)
-                    Error = Visibility.Visible;
-                else
-                    Error = Visibility.Hidden;
                 NotifyPropertyChanged(nameof(ErrorList));
             }
         }
 
-        private Visibility _error;
+        public String CurrentError
+        {
+            get { return _errorList.Count > 0 ? _errorList.FirstOrDefault(e => e.Key.StartsWith(CustomerNr.ToString())).Value : ""; }
+        }
+
         public Visibility Error
         {
-            get { return _error; }
-            set
-            {
-                _error = value;
-                NotifyPropertyChanged(nameof(Error));
-            }
+            get { return _errorList.Count > 0 ? Visibility.Visible : Visibility.Hidden; }
         }
 
         private bool _saveData;
@@ -245,6 +285,14 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 {
                     DataAccess.Customers.Remove(CustomerData);
                     DataAccess.SaveChanges();
+
+                    ErrorList.Remove(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.Name) + ": ");
+                    ErrorList.Remove(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.AddressSelectedItem) + ": ");
+                    ErrorList.Remove(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.EMail) + ": ");
+                    ErrorList.Remove(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.Website) + ": ");
+                    NotifyPropertyChanged(nameof(CurrentError));
+                    NotifyPropertyChanged(nameof(Error));
+
                     Parent.DataAccess = DataAccess;
                     NotifyPropertyChanged(nameof(ItemList));
                     SetNew = true;
@@ -262,7 +310,15 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 {
                     CustomerData = new Customer();
                     CustomerData.CustomerKey = "CU";
-                    AddressSelectedItem = new KeyValuePair<string, string>();
+                    AddressSelectedItem = new KeyValuePair<string, string>(null, null);
+
+                    ErrorList = new Dictionary<string, string>();
+                    ErrorList.Add(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.Name) + ": ", Parent.ListOfErrors[nameof(Parent.CustomerViewModel) + "." + nameof(Parent.CustomerViewModel.Name)]);
+                    ErrorList.Add(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.AddressSelectedItem) + ": ", Parent.ListOfErrors[nameof(Parent.CustomerViewModel) + "." + nameof(Parent.CustomerViewModel.AddressSelectedItem)]);
+                    ErrorList.Add(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.EMail) + ": ", Parent.ListOfErrors[nameof(Parent.CustomerViewModel) + "." + nameof(Parent.CustomerViewModel.EMail)]);
+                    ErrorList.Add(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.Website) + ": ", Parent.ListOfErrors[nameof(Parent.CustomerViewModel) + "." + nameof(Parent.CustomerViewModel.Website)]);
+                    NotifyPropertyChanged(nameof(CurrentError));
+                    NotifyPropertyChanged(nameof(Error));
                 }
             }
         }
@@ -276,6 +332,21 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 _setEdit = value;
                 NotifyPropertyChanged(nameof(SetEdit));
             }
+        }
+
+        public void SavePassword(String Password)
+        {
+            int CustomerId = int.Parse(CustomerNr.Substring(2));
+            DataAccess.Customers.First(c => c.CustomerNr == CustomerId).Password = GetMD5Hash(Password);
+        }
+
+        public byte[] GetMD5Hash(string input)
+        {
+            System.Security.Cryptography.MD5CryptoServiceProvider x = new System.Security.Cryptography.MD5CryptoServiceProvider();
+            byte[] bs = System.Text.Encoding.Unicode.GetBytes(input);
+
+            bs = x.ComputeHash(bs);
+            return bs;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
