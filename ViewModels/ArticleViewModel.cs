@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Entity.Migrations;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms.VisualStyles;
 using Microsoft.VisualStudio.Utilities.Internal;
-using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Access;
+using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
 
 namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
@@ -20,17 +21,17 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             if (DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
                 return;
 
-            this.ArticleData = new Article();
+            this.ArticleData = new ArticleData();
             this.CurrentSearchMask = new SearchPage();
             this.ErrorList = new Dictionary<string, string>();
         }
 
         public MainViewModel Parent;
 
-        public AuftragsverwaltungDataAccess DataAccess;
+        public AuftragsverwaltungModel DataModel;
         
-        private Article _articleData;
-        private Article ArticleData
+        private ArticleData _articleData;
+        private ArticleData ArticleData
         {
             get { return _articleData; }
             set
@@ -39,6 +40,8 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(ArticleNr));
                 NotifyPropertyChanged(nameof(Name));
                 NotifyPropertyChanged(nameof(Designation));
+                NotifyPropertyChanged(nameof(Classification));
+                NotifyPropertyChanged(nameof(Currency));
                 NotifyPropertyChanged(nameof(ClassificationSelectedItem));
                 NotifyPropertyChanged(nameof(PurchasingPrice));
                 NotifyPropertyChanged(nameof(PPCurrencySelectedItem));
@@ -82,10 +85,10 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set
             {
                 ArticleData.Name = value;
-                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Name) + ": ");
+                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Name) );
                 if (value == "")
                 {
-                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Name) + ": ", Parent.ListOfErrors[nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.Name)]);
+                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Name) , Parent.ListOfErrors[nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.Name)]);
                 }
                 NotifyPropertyChanged(nameof(CurrentError));
                 NotifyPropertyChanged(nameof(Error));
@@ -100,10 +103,10 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 ArticleData.Designation = value;
                 
-                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Designation) + ": ");
+                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Designation) );
                 if (value == "")
                 {
-                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Designation) + ": ", Parent.ListOfErrors[nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.Designation)]);
+                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Designation) , Parent.ListOfErrors[nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.Designation)]);
                 }
                 NotifyPropertyChanged(nameof(CurrentError));
                 NotifyPropertyChanged(nameof(Error));
@@ -117,7 +120,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 Dictionary<int, String> ListDictionary = new Dictionary<int, String>();
                 ListDictionary.Add(0, null);
-                ListDictionary.AddRange(DataAccess.ArticleClassifications.ToDictionary(a => a.ClassificationNr, a => a.Name));
+                ListDictionary.AddRange(DataModel.ArticleClassifications.ToDictionary(a => a.ClassificationNr, a => a.Name));
                 return ListDictionary;
             }
         }
@@ -136,13 +139,14 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set
             {
                 ArticleData.ArticleClassification =
-                    value.Key > 0 ? DataAccess.ArticleClassifications.First(a => a.ClassificationNr == value.Key) :  new ArticleClassification();
+                    value.Key > 0 ? DataModel.ArticleClassifications.First(a => a.ClassificationNr == value.Key) :  new ArticleClassificationData();
+                ArticleData.Classification = value.Key;
                 ClassificationValue = value.Value;
                 
-                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.ClassificationSelectedItem) + ": ");
+                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.ClassificationSelectedItem) );
                 if (value.Key == 0)
                 {
-                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.ClassificationSelectedItem) + ": ", Parent.ListOfErrors[nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.ClassificationSelectedItem)]);
+                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.ClassificationSelectedItem) , Parent.ListOfErrors[nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.ClassificationSelectedItem)]);
                 }
                 NotifyPropertyChanged(nameof(CurrentError));
                 NotifyPropertyChanged(nameof(Error));
@@ -161,17 +165,17 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             }
         }
         
-        public Decimal PurchasingPrice
+        public Double PurchasingPrice
         {
             get { return ArticleData.PurchasingPrice; }
             set
             {
                 ArticleData.PurchasingPrice = value;
 
-                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PurchasingPrice) + ": ");
+                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PurchasingPrice) );
                 if (value == 0)
                 {
-                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PurchasingPrice) + ": ", Parent.ListOfErrors[nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.PurchasingPrice)]);
+                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PurchasingPrice) , Parent.ListOfErrors[nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.PurchasingPrice)]);
                 }
                 NotifyPropertyChanged(nameof(CurrentError));
                 NotifyPropertyChanged(nameof(Error));
@@ -185,7 +189,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 Dictionary<String, String> ListDictionary = new Dictionary<String, String>();
                 ListDictionary.Add("", null);
-                ListDictionary.AddRange(DataAccess.Currencies.ToDictionary(c => c.CurrencyCode, c => c.Name));
+                ListDictionary.AddRange(DataModel.Currencies.ToDictionary(c => c.CurrencyCode, c => c.Name));
                 return ListDictionary;
             }
             set
@@ -200,19 +204,21 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 KeyValuePair<String, String> ItemKeyValue = new KeyValuePair<String, String>();
 
-                if (ArticleData != null && ArticleData.Currency != null)
-                    ItemKeyValue =
-                        new KeyValuePair<string, string>(ArticleData.Currency.CurrencyCode, ArticleData.Currency.Name);
+                if (ArticleData != null)
+                    ItemKeyValue = ArticleData.CurrencyPP != null ? new KeyValuePair<string, string>(ArticleData.CurrencyPP.CurrencyCode, ArticleData.CurrencyPP.Name) : new KeyValuePair<string, string>("", null);
 
                 return ItemKeyValue;
             }
             set
             {
                 ArticleData.PPCurrency = value.Key;
-                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PPCurrencySelectedItem) + ": ");
+                ArticleData.CurrencyPP = value.Key != ""
+                    ? DataModel.Currencies.First(c => c.CurrencyCode == value.Key)
+                    : new CurrencyData();
+                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PPCurrencySelectedItem) );
                 if (value.Key == "")
                 {
-                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PPCurrencySelectedItem) + ": ", Parent.ListOfErrors[nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.PPCurrencySelectedItem)]);
+                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PPCurrencySelectedItem) , Parent.ListOfErrors[nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.PPCurrencySelectedItem)]);
                 }
                 NotifyPropertyChanged(nameof(CurrentError));
                 NotifyPropertyChanged(nameof(Error));
@@ -220,17 +226,17 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             }
         }
 
-        public Decimal SalesPrice
+        public Double SalesPrice
         {
             get { return ArticleData.SalesPrice; }
             set
             {
                 ArticleData.SalesPrice = value;
 
-                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SalesPrice) + ": ");
+                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SalesPrice) );
                 if (value == 0)
                 {
-                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SalesPrice) + ": ", Parent.ListOfErrors[nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.SalesPrice)]);
+                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SalesPrice) , Parent.ListOfErrors[nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.SalesPrice)]);
                 }
                 NotifyPropertyChanged(nameof(CurrentError));
                 NotifyPropertyChanged(nameof(Error));
@@ -244,42 +250,44 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 KeyValuePair<String, String> ItemKeyValue = new KeyValuePair<String, String>();
 
-                if (ArticleData != null && ArticleData.Currency1 != null)
-                    ItemKeyValue =
-                        new KeyValuePair<string, string>(ArticleData.Currency1.CurrencyCode, ArticleData.Currency1.Name);
+                if (ArticleData != null)
+                    ItemKeyValue = ArticleData.CurrencySP != null ? new KeyValuePair<string, string>(ArticleData.CurrencySP.CurrencyCode, ArticleData.CurrencySP.Name) : new KeyValuePair<string, string>("", null);
 
                 return ItemKeyValue;
             }
             set
             {
                 ArticleData.SPCurrency = value.Key;
+                ArticleData.CurrencySP = value.Key != ""
+                    ? DataModel.Currencies.First(c => c.CurrencyCode == value.Key)
+                    : new CurrencyData();
 
-                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SPCurrencySelectedItem) + ": ");
+                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SPCurrencySelectedItem) );
                 if (value.Key == "")
                 {
-                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SPCurrencySelectedItem) + ": ", Parent.ListOfErrors[nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.SPCurrencySelectedItem)]);
+                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SPCurrencySelectedItem) , Parent.ListOfErrors[nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.SPCurrencySelectedItem)]);
                 }
                 NotifyPropertyChanged(nameof(CurrentError));
                 NotifyPropertyChanged(nameof(Error));
                 NotifyPropertyChanged(nameof(SPCurrencySelectedItem));
             }
         }
-        public List<Article_History> HistoryList
+        public List<Article_HistoryData> HistoryList
         {
-            get { return ArticleData != null && ArticleData.ArticleNr != 0 ? DataAccess.Article_History.Where(h => h.ArticleNr == ArticleData.ArticleNr).ToList() : new List<Article_History>(); }
+            get { return ArticleData != null && ArticleData.ArticleNr != 0 ? DataModel.Article_History.Where(h => h.ArticleNr == ArticleData.ArticleNr).ToList() : new List<Article_HistoryData>(); }
         }
         public Dictionary<int, String> ItemList
         {
             get
             {
-                Dictionary<int, String> dataDictionary;
+                Dictionary<int, String> dataDictionary = new Dictionary<int, string>();
                 if (SearchTerm != null)
-                    dataDictionary = DataAccess.Articles.Where(a => a.ArticleNr.ToString().Contains(SearchTerm) ||
+                    dataDictionary = DataModel.Articles.Where(a => a.ArticleNr.ToString().Contains(SearchTerm) ||
                                                                     a.Name.Contains(SearchTerm) ||
                                                                     a.Designation.Contains(SearchTerm))
                         .ToDictionary(a => a.ArticleNr, a => a.Name);
                 else
-                    dataDictionary = DataAccess.Articles.ToDictionary(a => a.ArticleNr, a => a.Name);
+                    dataDictionary = DataModel.Articles.ToDictionary(a => a.ArticleNr, a => a.Name);
                 
                 return dataDictionary;
             }
@@ -308,7 +316,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set
             {
                 _selectedItem = value;
-                ArticleData = DataAccess.Articles.First(a => a.ArticleNr == value.Key);
+                ArticleData = DataModel.Articles.First(a => a.ArticleNr == value.Key);
                 SetEdit = false;
                 NotifyPropertyChanged(nameof(SelectedItem));
                 NotifyPropertyChanged(nameof(CurrentError));
@@ -330,58 +338,55 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
 
         public String CurrentError
         {
-            get { return _errorList.Count > 0 ? _errorList.FirstOrDefault(e => e.Key.StartsWith(ArticleNr.ToString())).Value : ""; }
+            get
+            {
+                return _errorList.Count > 0 ? _errorList.FirstOrDefault(e => e.Key.StartsWith(ArticleNr.ToString())).Value : "";
+            }
         }
 
         public Visibility Error
         {
             get { return _errorList.Count > 0 ? Visibility.Visible : Visibility.Hidden; }
         }
-
-        private bool _saveData;
-        public bool SaveData
+        
+        public void SaveData()
         {
-            get { return _saveData; }
-            set
+            if ((_errorList == null || _errorList.Where(a => a.Key.StartsWith(ArticleData.ArticleNr.ToString())).ToList().Count == 0))
             {
-                if ((_errorList == null || _errorList.Count == 0) && value)
+                if (ArticleNr == 0)
                 {
-                    if (ArticleNr == 0)
-                    {
-                        int newKey = DataAccess.Articles.Select(a => a.ArticleNr).DefaultIfEmpty(0).Max();
-                        ArticleData.ArticleNr = newKey == 0 ? 1000000 : newKey + 1;
-                    }
-
-                    DataAccess.Articles.AddOrUpdate(ArticleData);
-                    DataAccess.SaveChanges();
-                    Parent.DataAccess = DataAccess;
-                    NotifyPropertyChanged(nameof(ItemList));
+                    int newKey = DataModel.Articles.Select(a => a.ArticleNr).DefaultIfEmpty(0).Max();
+                    ArticleData.ArticleNr = newKey == 0 ? 1000000 : newKey + 1;
                 }
+                
+                DataModel.WriteData(ArticleData);
+                Parent.DataModel = DataModel;
+                SetEdit = false;
+                NotifyPropertyChanged(nameof(ItemList));
             }
-        }
-
-        private bool _deleteData;
-        public bool DeleteData
+    }
+        
+        public void DeleteData()
         {
-            get { return _saveData; }
-            set
+            if (DataModel.Articles.Select(a => a.ArticleNr).Contains(ArticleData.ArticleNr))
             {
-                if (value && DataAccess.Articles.Select(a => a.ArticleNr).Contains(ArticleData.ArticleNr))
-                {
-                    DataAccess.Articles.Remove(ArticleData);
-                    DataAccess.SaveChanges();
-                    ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Name) + ": ");
-                    ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Designation) + ": ");
-                    ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.ClassificationSelectedItem) + ": ");
-                    ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PurchasingPrice) + ": ");
-                    ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PPCurrencySelectedItem) + ": ");
-                    ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SalesPrice) + ": ");
-                    ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SPCurrencySelectedItem) + ": ");
-                    NotifyPropertyChanged(nameof(CurrentError));
-                    NotifyPropertyChanged(nameof(Error));
-                    NotifyPropertyChanged(nameof(ItemList));
+                ErrorList.Remove(ArticleData.ArticleNr.ToString());
+                KeyValuePair <String, String> DeleteError = DataModel.DeleteData(ArticleData);
+                if (DeleteError.Key != "")
+                    ErrorList.Add(DeleteError.Key , DeleteError.Value);
+                else
                     SetNew = true;
-                }
+
+                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Name) );
+                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Designation) );
+                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.ClassificationSelectedItem) );
+                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PurchasingPrice) );
+                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PPCurrencySelectedItem) );
+                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SalesPrice) );
+                ErrorList.Remove(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SPCurrencySelectedItem) );
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
+                NotifyPropertyChanged(nameof(ItemList));
             }
         }
 
@@ -393,33 +398,34 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 if (value)
                 {
-                    ArticleData = new Article();
+                    ArticleData = new ArticleData();
+                    
                     ClassificationSelectedItem = new KeyValuePair<int, string>(0, null);
                     PPCurrencySelectedItem = new KeyValuePair<string, string>("", null);
                     SPCurrencySelectedItem = new KeyValuePair<string, string>("", null);
 
                     ErrorList = new Dictionary<string, string>();
-                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Name) + ": ",
+                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Name) ,
                         Parent.ListOfErrors[
                             nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.Name)]);
-                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Designation) + ": ",
+                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.Designation) ,
                         Parent.ListOfErrors[
                             nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.Designation)]);
-                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.ClassificationSelectedItem) + ": ",
+                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.ClassificationSelectedItem) ,
                         Parent.ListOfErrors[
                             nameof(Parent.ArticleViewModel) + "." +
                             nameof(Parent.ArticleViewModel.ClassificationSelectedItem)]);
-                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PurchasingPrice) + ": ",
+                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PurchasingPrice) ,
                         Parent.ListOfErrors[
                             nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.PurchasingPrice)]);
-                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PPCurrencySelectedItem) + ": ",
+                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.PPCurrencySelectedItem) ,
                         Parent.ListOfErrors[
                             nameof(Parent.ArticleViewModel) + "." +
                             nameof(Parent.ArticleViewModel.PPCurrencySelectedItem)]);
-                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SalesPrice) + ": ",
+                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SalesPrice) ,
                         Parent.ListOfErrors[
                             nameof(Parent.ArticleViewModel) + "." + nameof(Parent.ArticleViewModel.SalesPrice)]);
-                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SPCurrencySelectedItem) + ": ",
+                    ErrorList.Add(Parent.ArticleViewModel.ArticleNr + "." + nameof(Parent.ArticleViewModel.SPCurrencySelectedItem) ,
                         Parent.ListOfErrors[
                             nameof(Parent.ArticleViewModel) + "." +
                             nameof(Parent.ArticleViewModel.SPCurrencySelectedItem)]);

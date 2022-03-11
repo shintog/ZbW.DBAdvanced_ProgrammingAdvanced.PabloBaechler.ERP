@@ -1,118 +1,85 @@
-With CTE_YearoverYear (
-	Category, [Value] )
-AS (
-	SELECT 'Anzahl Aufträge' as Category, 
-			COUNT([Order].[OrderNr]) as [Value]
-	FROM [Order]
-	UNION ALL
-	SELECT 'Anzahl verwaltete Artikel' as Category, 
-			COUNT([Article].[ArticleNr]) as [Value]
-	FROM [Article]
-	UNION ALL
-	SELECT  *
-	FROM (SELECT 'Durchschnittliche Anzahl Artikel pro Auftrag' as Category, AVG([Position].[Amount]) as [Value] FROM [Order] JOIN [Position] ON ([Position].[Order] = [Order].[OrderNr]) GROUP BY [Order].[OrderNr]) t
-	UNION ALL
-	SELECT  *
-	FROM (SELECT 'Umsatz pro Kunde (CHF)' as Category, sum([Article].[SalesPrice]) as [Value] FROM [Order] join [Position] on ([Position].[Order] = [Order].[OrderNr]) join [Article] on ([Article].[ArticleNr] = [Position].[Article]) GROUP BY [Order].[CustomerNr]) t
-	UNION ALL
-	SELECT  *
-	FROM (SELECT 'Gesamtumsatz' as Category,  sum([Article].[SalesPrice]) as [Value] FROM [Order] join [Position] on ([Position].[Order] = [Order].[OrderNr]) join [Article] on ([Article].[ArticleNr] = [Position].[Article])) t
-)
-SELECT * FROM   
-(
-	SELECT 
-        'Q1 2019' AS category_name, 
-        [Value],
-		Category
-    FROM CTE_YearoverYear FOR SYSTEM_TIME BETWEEN '2019-01-01 00:00:00' AND '2019-03-31 23:59:59'
-	UNION ALL
-	SELECT 
-        'Q2 2019' AS category_name, 
-        [Value],
-		Category
-    FROM CTE_YearoverYear FOR SYSTEM_TIME BETWEEN '2019-04-01 00:00:00' AND '2019-06-30 23:59:59'
-	UNION ALL
-	SELECT 
-        'Q3 2019' AS category_name, 
-        [Value],
-		Category
-    FROM CTE_YearoverYear FOR SYSTEM_TIME BETWEEN '2019-07-01 00:00:00' AND '2019-09-30 23:59:59'
-	UNION ALL
-	SELECT 
-        'Q4 2019' AS category_name, 
-        [Value],
-		Category
-    FROM CTE_YearoverYear FOR SYSTEM_TIME BETWEEN '2019-10-01 00:00:00' AND '2019-12-31 23:59:59'
-	UNION ALL
-	SELECT 
-        'Q1 2020' AS category_name, 
-        [Value],
-		Category
-    FROM CTE_YearoverYear FOR SYSTEM_TIME BETWEEN '2020-01-01 00:00:00' AND '2020-03-31 23:59:59'
-	UNION ALL
-	SELECT 
-        'Q2 2020' AS category_name, 
-        [Value],
-		Category
-    FROM CTE_YearoverYear FOR SYSTEM_TIME BETWEEN '2020-04-01 00:00:00' AND '2020-06-30 23:59:59'
-	UNION ALL
-	SELECT 
-        'Q3 2020' AS category_name, 
-        [Value],
-		Category
-    FROM CTE_YearoverYear FOR SYSTEM_TIME BETWEEN '2020-07-01 00:00:00' AND '2020-09-30 23:59:59'
-	UNION ALL
-	SELECT 
-        'Q4 2020' AS category_name, 
-        [Value],
-		Category
-    FROM CTE_YearoverYear FOR SYSTEM_TIME BETWEEN '2020-10-01 00:00:00' AND '2020-12-31 23:59:59'
-	UNION ALL
-	SELECT 
-        'Q1 2021' AS category_name, 
-        [Value],
-		Category
-    FROM CTE_YearoverYear FOR SYSTEM_TIME BETWEEN '2021-01-01 00:00:00' AND '2021-03-31 23:59:59'
-	UNION ALL
-	SELECT 
-        'Q2 2021' AS category_name, 
-        [Value],
-		Category
-    FROM CTE_YearoverYear FOR SYSTEM_TIME BETWEEN '2021-04-01 00:00:00' AND '2021-06-30 23:59:59'
-	UNION ALL
-	SELECT 
-        'Q3 2021' AS category_name, 
-        [Value],
-		Category
-    FROM CTE_YearoverYear FOR SYSTEM_TIME BETWEEN '2021-07-01 00:00:00' AND '2021-09-30 23:59:59'
-	UNION ALL
-	SELECT 
-        'Q4 2021' AS category_name, 
-        [Value],
-		Category
-    FROM CTE_YearoverYear FOR SYSTEM_TIME BETWEEN '2021-10-01 00:00:00' AND '2021-12-31 23:59:59'
-) t 
-PIVOT(
-    SUM([Value]) 
-    FOR category_name IN (
-        [Q1 2019], 
-        [Q1 2020], 
-        [YOY Q1 2019 - 2020],  
-        [Q1 2021], 
-        [YOY Q1 2020 - 2021], 
-        [Q2 2019], 
-        [Q2 2020], 
-        [YOY Q2 2019 - 2020],  
-        [Q2 2021], 
-        [YOY Q2 2020 - 2021], 
-        [Q3 2019], 
-        [Q3 2020], 
-        [YOY Q3 2019 - 2020],  
-        [Q3 2021], 
-        [YOY Q3 2020 - 2021], 
-        [Q4 2019], 
-        [Q4 2020], 
-        [YOY Q4 2019 - 2020],  
-        [Q4 2021], 
-        [YOY Q4 2020 - 2021])
-) AS pivot_table;
+USE auftragsverwaltung;  
+GO  
+CREATE PROCEDURE CreateYOYReport
+AS   
+DECLARE @MyCursor CURSOR;
+DECLARE @DateStart DATE;
+DECLARE @DateEnd DATE;
+BEGIN
+    SET @MyCursor = CURSOR FOR
+		With 
+		CTE_QuarterOfAYear ([QuartersAgo], [Date]) AS (
+			SELECT 1 as QuartersAgo, GETDATE() as [Date]
+			UNION ALL 
+			SELECT QuartersAgo + 1, 
+				DATEADD(MONTH, -3, CTE_QuarterOfAYear.[Date])
+			FROM CTE_QuarterOfAYear
+			WHERE QuartersAgo <= 12
+		)
+		select DATEADD(qq, DATEDIFF(qq, 0, [Date]), 0), DATEADD (dd, -1, DATEADD(qq, DATEDIFF(qq, 0, [Date]) +1, 0)) from CTE_QuarterOfAYear;
+
+	DELETE FROM [YearOverYear];
+
+    OPEN @MyCursor 
+    FETCH NEXT FROM @MyCursor 
+    INTO @DateStart,  @DateEnd 
+
+	WHILE @@FETCH_STATUS = 0
+    BEGIN 
+		With 
+		CTE_YearoverYear (Category, [Value], [Quarter], [YEAR]) AS (
+			SELECT 'Anzahl Aufträge' as Category, 
+					COUNT([Order].[OrderNr]) as [Value],
+					DATEPART(QUARTER, @DateStart) as [Quarter],
+					YEAR(@DateStart) as [Year]
+			FROM [Order]
+			WHERE [Order].[Date] BETWEEN  @DateStart AND @DateEnd
+			UNION ALL
+			SELECT 'Anzahl verwaltete Artikel' as Category, 
+					COUNT([Article].[ArticleNr]) as [Value],
+					DATEPART(QUARTER, @DateStart) as [Quarter],
+					YEAR(@DateStart) as [Year]
+			FROM [Article] FOR SYSTEM_TIME  BETWEEN  @DateStart AND @DateEnd
+			UNION ALL
+			SELECT 'Durchschnittliche Anzahl Artikel pro Auftrag' as Category,
+					AVG([Position].[Amount]) as [Value],		
+					DATEPART(QUARTER, @DateStart) as [Quarter],
+					YEAR(@DateStart) as [Year]
+			FROM [Order]
+			JOIN [Position] FOR SYSTEM_TIME  BETWEEN  @DateStart AND @DateEnd ON ([Position].[Order] = [Order].[OrderNr]) 
+			WHERE [Order].[Date] BETWEEN  @DateStart AND @DateEnd
+			UNION ALL
+			SELECT 'Umsatz pro Kunde (CHF)' as Category, 
+					sum([Article].[SalesPrice] * [Position].[Amount]) as [Value],
+					DATEPART(QUARTER, @DateStart) as [Quarter],
+					YEAR(@DateStart) as [Year]
+			FROM [Order]
+			JOIN [Position] FOR SYSTEM_TIME  BETWEEN  @DateStart AND @DateEnd ON ([Position].[Order] = [Order].[OrderNr]) 
+			join [Article] FOR SYSTEM_TIME  BETWEEN  @DateStart AND @DateEnd on ([Article].[ArticleNr] = [Position].[Article])		
+			WHERE [Order].[Date] BETWEEN  @DateStart AND @DateEnd	
+			UNION ALL
+			SELECT 'Gesamtumsatz' as Category,  
+					sum([Article].[SalesPrice] * [Position].[Amount]) as [Value],	
+					DATEPART(QUARTER, @DateStart) as [Quarter],
+					YEAR(@DateStart) as [Year]
+			FROM [Order]
+			JOIN [Position] FOR SYSTEM_TIME  BETWEEN  @DateStart AND @DateEnd ON ([Position].[Order] = [Order].[OrderNr]) 
+			join [Article] FOR SYSTEM_TIME  BETWEEN  @DateStart AND @DateEnd on ([Article].[ArticleNr] = [Position].[Article])
+			WHERE [Order].[Date] BETWEEN  @DateStart AND @DateEnd
+		)
+		INSERT INTO YearOverYear 
+			SELECT 
+				Category,
+				[Value],
+				[Quarter],
+				[Year]
+			FROM CTE_YearoverYear;
+
+	  FETCH NEXT FROM @MyCursor
+      INTO  @DateStart,  @DateEnd  
+    END; 
+
+    CLOSE @MyCursor ;
+    DEALLOCATE @MyCursor;
+END;
+

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.VisualStudio.Utilities.Internal;
-using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Access;
+using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
 
 namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
@@ -19,7 +19,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             if (DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
                 return;
 
-            this.ClassificationData = new ArticleClassification();
+            this.ClassificationData = new ArticleClassificationData();
             this.CurrentSearchMask = new SearchPage();
             this.ErrorList = new Dictionary<string, string>();
 
@@ -28,10 +28,10 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
 
         public MainViewModel Parent;
 
-        public AuftragsverwaltungDataAccess DataAccess;
+        public AuftragsverwaltungModel DataModel;
 
-        private ArticleClassification _classificationData;
-        private ArticleClassification ClassificationData
+        private ArticleClassificationData _classificationData;
+        private ArticleClassificationData ClassificationData
         {
             get { return _classificationData; } 
             set
@@ -42,6 +42,8 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(ParentSelectedItem));
                 NotifyPropertyChanged(nameof(Name));
                 NotifyPropertyChanged(nameof(HistoryList));
+                NotifyPropertyChanged(nameof(HierarchyTree));
+                NotifyPropertyChanged(nameof(ParentClassification));
             }
         }
         
@@ -81,7 +83,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 Dictionary<int, String> ListDictionary = new Dictionary<int, String>();
                 ListDictionary.Add(0, null);
-                ListDictionary.AddRange(DataAccess.ArticleClassifications.Where(a => a.ClassificationNr != ClassificationNr).ToDictionary(a => a.ClassificationNr, a => a.Name));
+                ListDictionary.AddRange(DataModel.ArticleClassifications.Where(a => a.ClassificationNr != ClassificationNr).ToDictionary(a => a.ClassificationNr, a => a.Name));
                 return ListDictionary;
             }
         }
@@ -124,32 +126,42 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 ClassificationData.Name = value;
 
-                ErrorList.Remove(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) + ": ");
+                ErrorList.Remove(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) );
                 if (value == "")
                 {
-                    ErrorList.Add(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) + ": ", Parent.ListOfErrors[nameof(Parent.ArticleClassificationViewModel) + "." + nameof(Parent.ArticleClassificationViewModel.Name)]);
+                    ErrorList.Add(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) , Parent.ListOfErrors[nameof(Parent.ArticleClassificationViewModel) + "." + nameof(Parent.ArticleClassificationViewModel.Name)]);
                 }
                 NotifyPropertyChanged(nameof(CurrentError));
                 NotifyPropertyChanged(nameof(Error));
                 NotifyPropertyChanged(nameof(Name));
             }
         }
-        public List<ArticleClassification_History> HistoryList
+
+        public List<V_CTE_ArticleClassificationHierarchyData> HierarchyTree
         {
-            get { return ClassificationData != null && ClassificationData.ClassificationNr != 0 ? DataAccess.ArticleClassification_History.Where(h => h.ClassificationNr == ClassificationData.ClassificationNr).ToList() : new List<ArticleClassification_History>(); }
+            get
+            {
+                return DataModel.V_Classification_Hierarchy.Where(h => h.ClassificationNr == ClassificationNr)
+                    .ToList();
+            }
+        }
+
+        public List<ArticleClassification_HistoryData> HistoryList
+        {
+            get { return ClassificationData != null && ClassificationData.ClassificationNr != 0 ? DataModel.ArticleClassification_History.Where(h => h.ClassificationNr == ClassificationData.ClassificationNr).ToList() : new List<ArticleClassification_HistoryData>(); }
         }
         public Dictionary<int, String> ItemList
         {
             get
             {
-                Dictionary<int, String> dataDictionary;
+                Dictionary<int, String> dataDictionary = new Dictionary<int, string>();
                 if (SearchTerm != null)
-                    dataDictionary = DataAccess.ArticleClassifications.Where(a => a.ClassificationNr.ToString().Contains(SearchTerm) ||
+                    dataDictionary = DataModel.ArticleClassifications.Where(a => a.ClassificationNr.ToString().Contains(SearchTerm) ||
                                                                      a.Name.Contains(SearchTerm) ||
                                                                      a.Parent.ToString().Contains(SearchTerm))
                         .ToDictionary(a => a.ClassificationNr, a => a.Name);
                 else
-                    dataDictionary = DataAccess.ArticleClassifications.ToDictionary(a => a.ClassificationNr, a => a.Name);
+                    dataDictionary = DataModel.ArticleClassifications.ToDictionary(a => a.ClassificationNr, a => a.Name);
                 
                 return dataDictionary;
             }
@@ -174,7 +186,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set
             {
                 _selectedItem = value;
-                ClassificationData = DataAccess.ArticleClassifications.First(a => a.ClassificationNr == value.Key);
+                ClassificationData = DataModel.ArticleClassifications.First(a => a.ClassificationNr == value.Key);
                 SetEdit = false;
                 NotifyPropertyChanged(nameof(SelectedItem));
                 NotifyPropertyChanged(nameof(CurrentError));
@@ -203,52 +215,45 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         {
             get { return _errorList.Count > 0 ? Visibility.Visible : Visibility.Hidden; }
         }
-
-        private bool _saveData;
-        public bool SaveData
+        
+        public void SaveData()
         {
-            get { return _saveData; }
-            set
+            if ((_errorList == null || _errorList.Where(a => a.Key.StartsWith(ClassificationData.ClassificationNr.ToString())).ToList().Count == 0))
             {
-                if ((_errorList == null || _errorList.Count == 0) && value)
+                if (ClassificationNr == 0)
                 {
-                    if (ClassificationNr == 0)
-                    {
-                        int newKey = DataAccess.ArticleClassifications.Select(a => a.ClassificationNr).DefaultIfEmpty(0).Max();
-                        ClassificationData.ClassificationNr = newKey == 0 ? 1000000 : newKey + 1;
-                    }
-
-                    ClassificationData.Parent = ClassificationData.Parent == 0 ? null : ClassificationData.Parent;
-
-                    DataAccess.ArticleClassifications.AddOrUpdate(ClassificationData);
-                    DataAccess.SaveChanges();
-                    Parent.DataAccess = DataAccess;
-                    NotifyPropertyChanged(nameof(ItemList));
-                    SelectedItem = new KeyValuePair<int, string>(ClassificationData.ClassificationNr,
-                        ClassificationData.Name);
+                    int newKey = DataModel.ArticleClassifications.Select(a => a.ClassificationNr).DefaultIfEmpty(0).Max();
+                    ClassificationData.ClassificationNr = newKey == 0 ? 1000000 : newKey + 1;
                 }
+
+                ClassificationData.Parent = ClassificationData.Parent == 0 ? null : ClassificationData.Parent;
+                
+                DataModel.WriteData(ClassificationData);
+                Parent.DataModel = DataModel;
+                SetEdit = false;
+                NotifyPropertyChanged(nameof(ItemList));
+                SelectedItem = new KeyValuePair<int, string>(ClassificationData.ClassificationNr,
+                    ClassificationData.Name);
             }
         }
-
-        private bool _deleteData;
-        public bool DeleteData
+        
+        public void DeleteData()
         {
-            get { return _saveData; }
-            set
+            if (DataModel.ArticleClassifications.Select(a => a.ClassificationNr).Contains(ClassificationData.ClassificationNr))
             {
-                if (value && DataAccess.ArticleClassifications.Select(a => a.ClassificationNr).Contains(ClassificationData.ClassificationNr))
-                {
-                    DataAccess.ArticleClassifications.Remove(ClassificationData);
-                    DataAccess.SaveChanges();
-
-                    ErrorList.Remove(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) + ": ");
-                    NotifyPropertyChanged(nameof(CurrentError));
-                    NotifyPropertyChanged(nameof(Error));
-
-                    Parent.DataAccess = DataAccess;
-                    NotifyPropertyChanged(nameof(ItemList));
+                ErrorList.Remove(ClassificationData.ClassificationNr.ToString());
+                KeyValuePair<String, String> DeleteError = DataModel.DeleteData(ClassificationData);
+                if (DeleteError.Key != "")
+                    ErrorList.Add(DeleteError.Key, DeleteError.Value);
+                else
                     SetNew = true;
-                }
+
+                ErrorList.Remove(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) );
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
+
+                Parent.DataModel = DataModel;
+                NotifyPropertyChanged(nameof(ItemList));
             }
         }
 
@@ -260,11 +265,11 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 if (value)
                 {
-                    ClassificationData = new ArticleClassification();
+                    ClassificationData = new ArticleClassificationData();
                     ParentSelectedItem = new KeyValuePair<int, string>();
 
                     ErrorList = new Dictionary<string, string>();
-                    ErrorList.Add(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) + ": ", Parent.ListOfErrors[nameof(Parent.ArticleClassificationViewModel) + "." + nameof(Parent.ArticleClassificationViewModel.Name)]);
+                    ErrorList.Add(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) , Parent.ListOfErrors[nameof(Parent.ArticleClassificationViewModel) + "." + nameof(Parent.ArticleClassificationViewModel.Name)]);
                     NotifyPropertyChanged(nameof(CurrentError));
                     NotifyPropertyChanged(nameof(Error));
                 }

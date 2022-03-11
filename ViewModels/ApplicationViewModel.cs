@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
 
 namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
@@ -22,6 +23,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         }
 
         public MainViewModel Parent;
+        public AuftragsverwaltungModel DataModel;
 
         private Dictionary<string, string> _currentApplications;
         public Dictionary<string, string> CurrentApplications
@@ -32,6 +34,11 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 _currentApplications = value;
                 NotifyPropertyChanged(nameof(CurrentApplications));
             }
+        }
+
+        public List<V_YearOverYearReportData> YearOverYear
+        {
+            get { return DataModel.V_YearOverYearReport; }
         }
 
         private Dictionary<string, Page> _applicationList;
@@ -57,9 +64,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(SelectedItem));
             }
         }
-
-        //public List<Object> YearOverYear => Parent.DataAccess.YearOverYear.ToList();
-
+        
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged(String info)

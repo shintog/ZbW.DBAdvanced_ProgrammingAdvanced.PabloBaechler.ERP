@@ -14,13 +14,15 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Support
     public class SupportingTools
     {
         public static Binding GenerateBinding(Object bindingContext, string path, BindingMode mode,
-            DependencyObject element, DependencyProperty property)
+            DependencyObject element, DependencyProperty property, String StringFormat)
         {
             //Bindings für die verschiedenen Elemente setzen
             Binding bindingItem = new Binding();
             bindingItem.Source = bindingContext;
             bindingItem.Path = new PropertyPath(path);
             bindingItem.Mode = mode;
+            if (StringFormat != "")
+                bindingItem.StringFormat = StringFormat;
             bindingItem.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
 
             return bindingItem;

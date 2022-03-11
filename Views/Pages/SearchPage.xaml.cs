@@ -60,10 +60,10 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             BindToElement("SelectedItem", BindingMode.TwoWay, lsvObjectList, ListView.SelectedItemProperty);
         }
 
-        public void BindToElement(string path, BindingMode mode, DependencyObject element, DependencyProperty property)
+        public void BindToElement(string path, BindingMode mode, DependencyObject element, DependencyProperty property, String StringFormat = "")
         {
             //Bindings für die verschiedenen Elemente setzen
-            Binding bindingItem = SupportingTools.GenerateBinding(DataContext, path, mode, element, property);
+            Binding bindingItem = SupportingTools.GenerateBinding(DataContext, path, mode, element, property, StringFormat);
             BindingOperations.SetBinding(element, property, bindingItem);
         }
     }

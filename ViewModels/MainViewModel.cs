@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Access;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Support;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
@@ -42,7 +43,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             OrderViewModel.Parent = this;
             AccountingViewModel.Parent = this;
 
-            this.DataAccess = new AuftragsverwaltungDataAccess();
+            this.DataModel = new AuftragsverwaltungModel();
 
             this.SelectedItem = new KeyValuePair<string, string>();
 
@@ -51,19 +52,20 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             
         }
 
-        private AuftragsverwaltungDataAccess _dataAccess;
-        public AuftragsverwaltungDataAccess DataAccess
+        private AuftragsverwaltungModel _dataModel;
+        public AuftragsverwaltungModel DataModel
         {
-            get { return _dataAccess; }
+            get { return _dataModel; }
             set
             {
-                _dataAccess = new AuftragsverwaltungDataAccess();
-                CustomerViewModel.DataAccess = _dataAccess;
-                AddressViewModel.DataAccess = _dataAccess;
-                ArticleViewModel.DataAccess = _dataAccess;
-                ArticleClassificationViewModel.DataAccess = _dataAccess;
-                OrderViewModel.DataAccess = _dataAccess; 
-                AccountingViewModel.DataAccess = _dataAccess;
+                _dataModel = new AuftragsverwaltungModel();
+                CustomerViewModel.DataModel = _dataModel;
+                AddressViewModel.DataModel = _dataModel;
+                ArticleViewModel.DataModel = _dataModel;
+                ArticleClassificationViewModel.DataModel = _dataModel;
+                OrderViewModel.DataModel = _dataModel;
+                AccountingViewModel.DataModel = _dataModel;
+                ApplicationViewModel.DataModel = _dataModel;
 
             }
         }
@@ -301,23 +303,17 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 .GetType();
             if (WindowType == typeof(AddressPage))
             {
-                AddressViewModel.SaveData = true;
-                if(AddressViewModel.ErrorList.Count == 0)
-                    AddressViewModel.SetEdit = false;
+                AddressViewModel.SaveData();
             }
 
             if (WindowType == typeof(ArticleClassificationPage))
             {
-                ArticleClassificationViewModel.SaveData = true;
-                if (ArticleClassificationViewModel.ErrorList.Count == 0)
-                    ArticleClassificationViewModel.SetEdit = false;
+                ArticleClassificationViewModel.SaveData();
             }
 
             if (WindowType == typeof(ArticlePage))
             {
-                ArticleViewModel.SaveData = true;
-                if (ArticleViewModel.ErrorList.Count == 0)
-                    ArticleViewModel.SetEdit = false;
+                ArticleViewModel.SaveData();
             }
 
             if (WindowType == typeof(CustomerPage))
@@ -325,16 +321,12 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 if(((CustomerPage)CurrentWindow).pwbPassword.Password != "" && ((CustomerPage)CurrentWindow).pwbPassword.Password == ((CustomerPage)CurrentWindow).pwbPasswordSec.Password)
                     CustomerViewModel.SavePassword(((CustomerPage)CurrentWindow).pwbPassword.Password);
               
-                CustomerViewModel.SaveData = true;
-                if (CustomerViewModel.ErrorList.Count == 0)
-                    CustomerViewModel.SetEdit = false;
+                CustomerViewModel.SaveData();
             }
 
             if (WindowType == typeof(OrderPage))
             {
-                OrderViewModel.SaveData = true;
-                if (OrderViewModel.ErrorList.Count == 0)
-                    OrderViewModel.SetEdit = false;
+                OrderViewModel.SaveData();
             }
         }
         public void DoDelete()
@@ -342,31 +334,31 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             Type WindowType = CurrentWindow.GetType();
             if (WindowType == typeof(AddressPage))
             {
-                AddressViewModel.DeleteData = true;
+                AddressViewModel.DeleteData();
                 AddressViewModel.SetEdit = false;
             }
 
             if (WindowType == typeof(ArticleClassificationPage))
             {
-                ArticleClassificationViewModel.DeleteData = true;
+                ArticleClassificationViewModel.DeleteData();
                 ArticleClassificationViewModel.SetEdit = false;
             }
 
             if (WindowType == typeof(ArticlePage))
             {
-                ArticleViewModel.DeleteData = true;
+                ArticleViewModel.DeleteData();
                 ArticleViewModel.SetEdit = false;
             }
 
             if (WindowType == typeof(CustomerPage))
             {
-                CustomerViewModel.DeleteData = true;
+                CustomerViewModel.DeleteData();
                 CustomerViewModel.SetEdit = false;
             }
 
             if (WindowType == typeof(OrderPage))
             {
-                OrderViewModel.DeleteData = true;
+                OrderViewModel.DeleteData();
                 OrderViewModel.SetEdit = false;
             }
         }

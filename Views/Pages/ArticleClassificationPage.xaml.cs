@@ -43,6 +43,8 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             BindToElement("ParentValue", BindingMode.TwoWay, txtParent, TextBox.TextProperty);
             //Parent-Value setzen
             BindToElement("Name", BindingMode.TwoWay, txtName, TextBox.TextProperty);
+            // Hierarchy setzen
+            BindToElement("HierarchyTree", BindingMode.OneWay, TreeHierarchy, TreeView.ItemsSourceProperty);
             //Error Sichtbarkeit setzen
             BindToElement("Error", BindingMode.OneWay, lblError, Label.VisibilityProperty);
             //Error Fehlerliste setzen
@@ -52,10 +54,10 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             BindToElement("SetEdit", BindingMode.OneWay, txtName, TextBox.IsEnabledProperty);
         }
 
-        public void BindToElement(string path, BindingMode mode, DependencyObject element, DependencyProperty property)
+        public void BindToElement(string path, BindingMode mode, DependencyObject element, DependencyProperty property, String StringFormat = "")
         {
             //Bindings für die verschiedenen Elemente setzen
-            Binding bindingItem = SupportingTools.GenerateBinding(DataContext, path, mode, element, property);
+            Binding bindingItem = SupportingTools.GenerateBinding(DataContext, path, mode, element, property, StringFormat);
             BindingOperations.SetBinding(element, property, bindingItem);
         }
     }

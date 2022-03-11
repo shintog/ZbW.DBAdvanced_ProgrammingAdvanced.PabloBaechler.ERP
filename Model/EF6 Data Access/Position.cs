@@ -10,12 +10,12 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Ac
     public partial class Position
     {
         [Key]
-        [Column(Order = 0)]
+        [Column(Order = 1)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int PositionNr { get; set; }
 
         [Key]
-        [Column(Order = 1)]
+        [Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Order { get; set; }
 

@@ -37,7 +37,21 @@
         <TextBox x:Name="txtOrderNr" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="3" TextWrapping="Wrap" Text="*Neu*" IsEnabled="False" VerticalAlignment="Top" Width="120"/>
 
         <Label x:Name="lblDate" Content="Datum:" Grid.Column="5" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" Width="80"/>
-        <DatePicker x:Name="dtpDate" Grid.Column="6" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" Width="120" FirstDayOfWeek="Monday"/>
+        <DatePicker x:Name="dtpDate" Grid.Column="6" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" Width="120" FirstDayOfWeek="Monday">
+            <DatePicker.Resources>
+                <Style TargetType="DatePickerTextBox">
+                    <Setter Property="Control.Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <TextBox x:Name="PART_TextBox"
+                                         Text="{Binding Path=SelectedDate, StringFormat = {}{0:dd-MM-yyyy}, 
+     RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DatePicker.Resources>
+        </DatePicker>
 
         <Label x:Name="lblCustomer" Content="Kunde:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Top" Width="80"/>
         <ComboBox x:Name="cmbCustomer" Grid.Column="3" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Top" Width="120" IsEditable="True" Height="25"  SelectedValuePath="Key" DisplayMemberPath="Value"/>

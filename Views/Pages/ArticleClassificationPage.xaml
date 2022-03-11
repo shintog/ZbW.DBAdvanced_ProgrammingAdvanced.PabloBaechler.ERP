@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages"
+      xmlns:ef6DataAccess="clr-namespace:ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Access"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ArticleClassificationPage">
@@ -31,7 +32,7 @@
             <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="100*"/>
         </Grid.ColumnDefinitions>
-        <Frame x:Name="frmSearch" Grid.Row="0" Grid.Column="0" Grid.RowSpan="8" NavigationUIVisibility="Hidden"></Frame>
+        <Frame x:Name="frmSearch" Grid.Row="0" Grid.Column="0" Grid.RowSpan="10" NavigationUIVisibility="Hidden"></Frame>
 
         <Label x:Name="lblClassificationNR" Content="Klassifik.-Nr.:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" Width="80"/>
         <TextBox x:Name="txtClassificationNr" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="3" TextWrapping="Wrap" Text="*Neu*" IsEnabled="False" VerticalAlignment="Top" Width="120"/>
@@ -43,6 +44,17 @@
         <Label x:Name="lblName" Content="Name:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Width="80"/>
         <TextBox x:Name="txtName" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="7" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <Label x:Name="lblError" Content="" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Grid.ColumnSpan="7" Width="585" Foreground="#FFB92323" Visibility="Hidden"/>
-        <TreeView Grid.ColumnSpan="7" Grid.Column="2" HorizontalAlignment="Left" Height="325" Grid.Row="9" VerticalAlignment="Top" Width="585"/>
+        <TreeView x:Name="TreeHierarchy" Grid.ColumnSpan="7" Grid.Column="2" HorizontalAlignment="Left" Height="325" Grid.Row="9" VerticalAlignment="Top" Width="585" BorderBrush="{x:Null}">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="True"/>
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type ef6DataAccess:V_CTE_ArticleClassificationHierarchy}" ItemsSource="{Binding Manages}">
+                    <TextBlock Text="{Binding Name}" />
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
     </Grid>
 </Page>

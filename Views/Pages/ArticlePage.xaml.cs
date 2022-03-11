@@ -46,13 +46,13 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             //Gewählte Klassifik,kation anzeigen setzen
             BindToElement("ClassificationValue", BindingMode.OneWay, txtClassification, TextBox.TextProperty);
             //Einkaufspreis setzen
-            BindToElement("PurchasingPrice", BindingMode.TwoWay, txtPurchasingPrice, TextBox.TextProperty);
+            BindToElement("PurchasingPrice", BindingMode.TwoWay, txtPurchasingPrice, TextBox.TextProperty, "N2");
             //Währung setzen
             BindToElement("Currency", BindingMode.OneWay, cmbPPCurrency, ComboBox.ItemsSourceProperty);
             //Einkaufspreis ->  Selektierter Wert zurückgeben
             BindToElement("PPCurrencySelectedItem", BindingMode.TwoWay, cmbPPCurrency, ComboBox.SelectedItemProperty);
             //Verkaufspreis setzen
-            BindToElement("SalesPrice", BindingMode.TwoWay, txtSalesPrice, TextBox.TextProperty);
+            BindToElement("SalesPrice", BindingMode.TwoWay, txtSalesPrice, TextBox.TextProperty, "N2");
             //Währung setzen
             BindToElement("Currency", BindingMode.OneWay, cmbSPCurrency, ComboBox.ItemsSourceProperty);
             //Verkaufspreis ->  Selektierter Wert zurückgeben
@@ -71,10 +71,10 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             BindToElement("SetEdit", BindingMode.OneWay, cmbSPCurrency, ComboBox.IsEnabledProperty);
         }
 
-        public void BindToElement(string path, BindingMode mode, DependencyObject element, DependencyProperty property)
+        public void BindToElement(string path, BindingMode mode, DependencyObject element, DependencyProperty property, String StringFormat = "")
         {
             //Bindings für die verschiedenen Elemente setzen
-            Binding bindingItem = SupportingTools.GenerateBinding(DataContext, path, mode, element, property);
+            Binding bindingItem = SupportingTools.GenerateBinding(DataContext, path, mode, element, property, StringFormat);
             BindingOperations.SetBinding(element, property, bindingItem);
         }
     }

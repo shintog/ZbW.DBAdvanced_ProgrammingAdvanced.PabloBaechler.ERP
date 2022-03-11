@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms.VisualStyles;
 using Microsoft.VisualStudio.Utilities.Internal;
-using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Access;
+using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
 
 namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
@@ -23,15 +23,15 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             if (DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
                 return;
 
-            this.AccountingData = new Accounting();
+            this.AccountingData = new AccountingData();
         }
 
         public MainViewModel Parent;
 
-        public AuftragsverwaltungDataAccess DataAccess;
+        public AuftragsverwaltungModel DataModel;
 
-        private Accounting _accountingData;
-        private Accounting AccountingData
+        private AccountingData _accountingData;
+        private AccountingData AccountingData
         {
             get { return _accountingData; }
             set
@@ -40,9 +40,9 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             }
         }
         
-        public List<Accounting> Accountings
+        public List<AccountingData> Accountings
         {
-            get { return DataAccess.Accountings.ToList(); }
+            get { return DataModel.Accountings.ToList(); }
         }
 
     }

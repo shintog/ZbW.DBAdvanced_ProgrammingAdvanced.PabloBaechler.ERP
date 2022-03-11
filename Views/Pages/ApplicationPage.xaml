@@ -13,7 +13,7 @@
             <ColumnDefinition Width="210"/>
             <ColumnDefinition Width="293*"/>
         </Grid.ColumnDefinitions>
-        <ListView Grid.Column="0" x:Name="lsvApplications" HorizontalAlignment="Left" Height="442" VerticalAlignment="Top" Width="205">
+        <ListView Grid.Column="0" x:Name="lsvApplications" HorizontalAlignment="Left" Height="450" VerticalAlignment="Top" Width="205">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="ID"
@@ -23,7 +23,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <DataGrid x:Name="DataGridYearOverYear" Grid.Column="1" HorizontalAlignment="Left" Height="450" VerticalAlignment="Top" Width="590"/>
+        <DataGrid x:Name="DataGridYearOverYear" Grid.Column="1" HorizontalAlignment="Left" Height="450" VerticalAlignment="Top" Width="590" IsReadOnly="True"/>
 
     </Grid>
 </Page>

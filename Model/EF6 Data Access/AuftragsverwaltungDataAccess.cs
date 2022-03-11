@@ -25,6 +25,9 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Ac
         public virtual DbSet<ArticleClassification_History> ArticleClassification_History { get; set; }
         public virtual DbSet<Customer_History> Customer_History { get; set; }
         public virtual DbSet<Order_History> Order_History { get; set; }
+        public virtual DbSet<V_CTE_ArticleClassificationHierarchy> V_Classification_Hierarchy { get; set; }
+        public virtual DbSet<V_YearOverYearReport> V_YoYReport { get; set; }
+
         public virtual DbSet<Position_History> Position_History { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -44,11 +47,11 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Ac
 
             modelBuilder.Entity<Article>()
                 .Property(e => e.PurchasingPrice)
-                .HasPrecision(18, 0);
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<Article>()
                 .Property(e => e.SalesPrice)
-                .HasPrecision(18, 0);
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<Article>()
                 .HasMany(e => e.Positions)
@@ -117,7 +120,64 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Ac
             modelBuilder.Entity<Position_History>()
                 .Property(e => e.Amount)
                 .HasPrecision(18, 0);
-            
+
+            modelBuilder.Entity<V_CTE_ArticleClassificationHierarchy>()
+                .HasOptional(e => e.ReportsTo)
+                .WithMany(e => e.Manages)
+                .HasForeignKey(e => e.ParentProductID)
+                .WillCascadeOnDelete(false);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.YOY)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q1_Y3)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q1_Y2)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q1_Y1)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q1_Y0)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q2_Y3)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q2_Y2)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q2_Y1)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q2_Y0)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q3_Y3)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q3_Y2)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q3_Y1)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q3_Y0)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q4_Y3)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q4_Y2)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q4_Y1)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<V_YearOverYearReport>()
+                .Property(e => e.Q4_Y0)
+                .HasPrecision(18, 2);
+
         }
     }
 }
