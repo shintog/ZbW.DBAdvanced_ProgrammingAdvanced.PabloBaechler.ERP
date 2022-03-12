@@ -40,7 +40,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views
             //ComboBox Appliaktionen -> Applikationsliste setzen
             BindToElement("CurrentApplications", BindingMode.OneWay, cmbApplications, ComboBox.ItemsSourceProperty);
             //ComboBox Applikationen -> Rückgabewert setzen
-            BindToElement("SelectedItem", BindingMode.OneWayToSource, cmbApplications, ComboBox.SelectedItemProperty);
+            BindToElement("SelectedItem", BindingMode.TwoWay, cmbApplications, ComboBox.SelectedItemProperty);
         }
 
         public void RegisterPages()

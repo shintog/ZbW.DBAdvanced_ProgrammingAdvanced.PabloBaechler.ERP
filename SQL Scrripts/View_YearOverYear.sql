@@ -7,10 +7,10 @@ SELECT Category,
   FROM [YearOverYear]
   UNION ALL
 SELECT Category,
-	   SUM([Value])  OVER (PARTITION BY [Category] ORDER BY [Category] ROWS 2 PRECEDING) as [Value],	  
+	   SUM(COALESCE([Value],0))  OVER (PARTITION BY [Category] ORDER BY [Category] ROWS 2 PRECEDING) as [Value],	  
 	   'YOY' as [Column_Header]
   FROM [YearOverYear]
-  GROUP BY Category
+  GROUP BY Category,[Value]
   ) t
 PIVOT(
 	SUM([Value]) 
@@ -35,9 +35,5 @@ PIVOT(
 	)
 ) AS pivot_table
 
-
-SELECT Category
-  FROM [YearOverYear]
-  GROUP BY Category
 
 exec CreateYOYReport;

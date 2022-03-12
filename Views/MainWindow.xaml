@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views"
         mc:Ignorable="d"
-        Title="ZbW DB Advanced/Programming Advanced Projektarbeit ERP" Height="533.933" Width="819.512" Icon="Logo.png" Background="White">
+        Title="ZbW DB Advanced/Programming Advanced Projektarbeit ERP" Height="523.289" Width="819.512" Icon="Logo.png" Background="White" ResizeMode="NoResize">
     <Grid>
         <Grid HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="800" Background="#FFC8C8FA">
             <Grid.ColumnDefinitions>
@@ -25,7 +25,7 @@
                 <RowDefinition Height="25*"/>
             </Grid.RowDefinitions>
             <Label x:Name="lblApplication" Content="Programm:" Grid.Column="0" Grid.Row="0"/>
-            <ComboBox x:Name="cmbApplications" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="135" Height="25" IsEditable="True" Grid.Row="0" SelectedValuePath="Key" DisplayMemberPath="Value"/>
+            <ComboBox x:Name="cmbApplications" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="135" Height="25" Grid.Row="0" SelectedValuePath="Key" DisplayMemberPath="Value" IsTextSearchEnabled="False"/>
             <Button x:Name="cmdNew" Command="{Binding Path=ClickNewCommand}" CommandParameter="{Binding}"  Grid.Column="3" HorizontalAlignment="Left" Margin="0,0,0,0" Width="25" BorderBrush="{x:Null}" Background="{x:Null}" Grid.Row="0">
                 <StackPanel>
                     <Image Source="new.png" RenderTransformOrigin="1.648,0.711" />

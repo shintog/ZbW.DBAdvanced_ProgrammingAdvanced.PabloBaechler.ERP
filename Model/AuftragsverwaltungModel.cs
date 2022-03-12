@@ -72,6 +72,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model
                 Record.Name = VARIABLE.Name;
                 Record.Street = VARIABLE.Street;
                 Record.ZIP = VARIABLE.ZIP;
+                Record.Currency = VARIABLE.Currency;
                 _accountings.Add(Record);
             }
 

@@ -35,7 +35,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             BindToElement("CurrentApplications", BindingMode.OneWay, lsvApplications, ListView.ItemsSourceProperty);
 
             //ListView Rückgabewert setzen
-            BindToElement("SelectedItem", BindingMode.OneWayToSource, lsvApplications, ListView.SelectedItemProperty);
+            BindToElement("SelectedItem", BindingMode.TwoWay, lsvApplications, ListView.SelectedItemProperty);
 
             //Jahresvergleich setzen
             BindToElement("YearOverYear", BindingMode.OneWay, DataGridYearOverYear, DataGrid.ItemsSourceProperty);

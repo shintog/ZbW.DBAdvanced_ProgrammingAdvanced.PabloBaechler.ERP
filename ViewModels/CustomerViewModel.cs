@@ -130,6 +130,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(CurrentError));
                 NotifyPropertyChanged(nameof(Error));
                 NotifyPropertyChanged(nameof(AddressSelectedItem));
+                NotifyPropertyChanged(nameof(AddressValue));
             }
         }
 
@@ -247,7 +248,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
 
         public String CurrentError
         {
-            get { return _errorList.Count > 0 ? _errorList.FirstOrDefault(e => e.Key.StartsWith(CustomerData.CustomerNr.ToString())).Value : ""; }
+            get { return _errorList.Count > 0 ? _errorList.FirstOrDefault(e => e.Key.StartsWith(CustomerNr.ToString())).Value : ""; }
         }
 
         public Visibility Error
@@ -257,7 +258,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         
         public void SaveData()
         {
-            if ((_errorList == null || _errorList.Where(a => a.Key.StartsWith(CustomerData.CustomerNr.ToString())).ToList().Count == 0))
+            if (_errorList == null || _errorList.Where(a => a.Key.StartsWith(CustomerNr.ToString())).ToList().Count == 0)
             {
                 if (CustomerNr == "CU0")
                 {

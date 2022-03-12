@@ -43,22 +43,22 @@
         <Label x:Name="lblName" Content="Name:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Top" Width="80"/>
         <TextBox x:Name="txtName" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="5" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
 
-        <Label x:Name="lblDesignation" Content="Bezeichnung:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Width="80"/>
+        <Label x:Name="lblDesignation" Content="Beschreibung:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Width="80"/>
         <TextBox x:Name="txtDesignation" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="7" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
 
         <Label x:Name="lblClassification" Content="Klassifikation:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="9" VerticalAlignment="Top" Width="80"/>
-        <ComboBox x:Name="cmbClassification" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="9" VerticalAlignment="Top" Width="120" IsEditable="True"  SelectedValuePath="Key" DisplayMemberPath="Value"/>
+        <ComboBox x:Name="cmbClassification" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="9" VerticalAlignment="Top" Width="120"  SelectedValuePath="Key" DisplayMemberPath="Value"/>
         <TextBox x:Name="txtClassification" Grid.Column="5" HorizontalAlignment="Left" Height="25" Grid.Row="9" Grid.ColumnSpan="4" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="380" IsReadOnly="True" BorderBrush="{x:Null}"/>
 
         <Label x:Name="lblPurchasingPrice" Content="Einkaufspreis:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="11" VerticalAlignment="Top" Width="80"/>
         <TextBox x:Name="txtPurchasingPrice" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="11" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <Label x:Name="lblPurchasingPriceCurrency" Content="Währung:" Grid.Column="5" HorizontalAlignment="Left" Grid.Row="11" VerticalAlignment="Top" Width="80"/>
-        <ComboBox x:Name="cmbPPCurrency" Grid.Column="6" HorizontalAlignment="Left" Grid.Row="11" VerticalAlignment="Top" Width="120" Height="25" IsEditable="True"  SelectedValuePath="Key" DisplayMemberPath="Value"/>
+        <ComboBox x:Name="cmbPPCurrency" Grid.Column="6" HorizontalAlignment="Left" Grid.Row="11" VerticalAlignment="Top" Width="120" Height="25"  SelectedValuePath="Key" DisplayMemberPath="Value"/>
 
         <Label x:Name="lblSalesPrice" Content="Verkaufspreis:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="13" VerticalAlignment="Top" Width="80"/>
         <TextBox x:Name="txtSalesPrice" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="13" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <Label x:Name="lblSalesCurrency" Content="Währung:" Grid.Column="5" HorizontalAlignment="Left" Grid.Row="13" VerticalAlignment="Top" Width="80"/>
-        <ComboBox x:Name="cmbSPCurrency" Grid.Column="6" HorizontalAlignment="Left" Grid.Row="13" VerticalAlignment="Top" Width="120" Height="25" IsEditable="True"  SelectedValuePath="Key" DisplayMemberPath="Value"/>
+        <ComboBox x:Name="cmbSPCurrency" Grid.Column="6" HorizontalAlignment="Left" Grid.Row="13" VerticalAlignment="Top" Width="120" Height="25"  SelectedValuePath="Key" DisplayMemberPath="Value"/>
         <Label x:Name="lblError" Content="" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="7" Width="585" Foreground="#FFB92323" Visibility="Hidden"/>
 
     </Grid>

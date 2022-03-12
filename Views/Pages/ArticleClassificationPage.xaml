@@ -38,7 +38,7 @@
         <TextBox x:Name="txtClassificationNr" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="3" TextWrapping="Wrap" Text="*Neu*" IsEnabled="False" VerticalAlignment="Top" Width="120"/>
 
         <Label x:Name="lblParent" Content="Überg. Klass.:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Top" Width="80"/>
-        <ComboBox x:Name="cmbParent" Grid.Column="3" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Top" Width="120" Height="25" BorderBrush="{x:Null}" Background="{x:Null}" IsEditable="True"  SelectedValuePath="Key" DisplayMemberPath="Value"/>
+        <ComboBox x:Name="cmbParent" Grid.Column="3" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Top" Width="120" Height="25" BorderBrush="{x:Null}" Background="{x:Null}"  SelectedValuePath="Key" DisplayMemberPath="Value"/>
         <TextBox x:Name="txtParent" Grid.Column="5" HorizontalAlignment="Left" Height="25" Grid.Row="5" Grid.ColumnSpan="4" TextWrapping="Wrap" VerticalAlignment="Top" Width="380" IsReadOnly="True" BorderBrush="{x:Null}"/>
 
         <Label x:Name="lblName" Content="Name:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Width="80"/>

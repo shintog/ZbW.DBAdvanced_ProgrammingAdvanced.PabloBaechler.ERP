@@ -68,22 +68,16 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         public Decimal OrderNr
         {
             get { return OrderData.OrderNr; }
-            set { }
         }
         
         public DateTime Date
         {
-            get
-            {
-                if(OrderData.Date != DateTime.MinValue)
-                   return OrderData.Date;
-                else
-                    return DateTime.Today;
-            }
+            get { return OrderData.Date; }
             set
             {
-                OrderData.Date = value;
-
+                if (value != new DateTime())
+                    OrderData.Date = value;
+                
                 ErrorList.Remove(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Date) );
                 if (value == new DateTime())
                 {
@@ -95,7 +89,34 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(Date));
             }
         }
+/*
+        public String DateValue
+        {
+            get
+            {
+                if (OrderData.Date != DateTime.MinValue)
+                    return OrderData.Date.ToString("dd.MM.yyyy");
+                else
+                    return DateTime.Today.ToString("dd.MM.yyyy");
+            }
+            set
+            {
+                if (value != "")
+                    OrderData.Date = DateTime.Parse(value.ToString("dd.MM.yyyy"));
 
+                ErrorList.Remove(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Date));
+                if (value == "")
+                {
+                    ErrorList.Add(Parent.OrderViewModel.OrderNr + "." + nameof(Parent.OrderViewModel.Date), Parent.ListOfErrors[nameof(Parent.OrderViewModel) + "." + nameof(Parent.OrderViewModel.Date)]);
+                }
+                NotifyPropertyChanged(nameof(CurrentError));
+                NotifyPropertyChanged(nameof(Error));
+
+                NotifyPropertyChanged(nameof(DateValue));
+
+            }
+        }
+*/
         public Dictionary<String, String> Customer
         {
             get
@@ -238,7 +259,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         
         public List<PositionData> Positions
         {
-            get { return OrderData.OrderNr > 0 ? OrderData.Positions.ToList() : new List<PositionData>(); }
+            get { return OrderData.Positions != null && OrderData.Positions.Count > 0 ? OrderData.Positions.ToList() : new List<PositionData>(); }
         }
 
         private PositionData _positionsSelectedItem;
@@ -471,6 +492,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             if (OrderData.Positions.Select(p => p.PositionNr).Contains(Position))
             {
                 OrderData.Positions.Remove(OrderData.Positions.First(p => p.PositionNr == Position));
+                Position = OrderData.Positions.Count > 0 ? OrderData.Positions.Select(p  => p.PositionNr).Min() : 0;
                 NotifyPropertyChanged(nameof(Positions));
                 ArticleSelectedItem = new KeyValuePair<int, string>(0, null);
                 if(OrderData.Positions.Count > 0)

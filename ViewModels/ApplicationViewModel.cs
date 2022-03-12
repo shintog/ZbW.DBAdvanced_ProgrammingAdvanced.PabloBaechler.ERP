@@ -18,6 +18,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             if (DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
                 return;
 
+            _selectedItem = new KeyValuePair<string, string>("", null);
             this.CurrentApplications = new Dictionary<string, string>();
             this.ApplicationList = new Dictionary<string, Page>();
         }

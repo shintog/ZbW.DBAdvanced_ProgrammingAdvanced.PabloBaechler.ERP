@@ -9,7 +9,8 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model
     public class AccountingData
     {
         public int CustomerNr { get; set; }
-        
+        public string Currency { get; set; }
+
         public string Name { get; set; }
         
         public string Street { get; set; }

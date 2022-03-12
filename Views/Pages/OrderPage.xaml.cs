@@ -37,7 +37,8 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             //Bestellnummer setzen
             BindToElement("OrderNr", BindingMode.OneWay, txtOrderNr, TextBox.TextProperty);
             //Datum setzen
-            BindToElement("Date", BindingMode.TwoWay, dtpDate, DatePicker.TextProperty, "{}{0:dd-MM-yyyy}}");
+            BindToElement("Date", BindingMode.TwoWay, dtpDate, DatePicker.SelectedDateProperty);
+ //           BindToElement("DateValue", BindingMode.TwoWay, dtpDate, DatePicker.SelectedDateProperty);
             //Kunde setzen
             BindToElement("Customer", BindingMode.OneWay, cmbCustomer, ComboBox.ItemsSourceProperty);
             //Kunde ->  Selektierter Wert zurückgebenn

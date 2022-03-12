@@ -14,6 +14,11 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Ac
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int CustomerNr { get; set; }
 
+        [Key]
+        [Column(Order = 2)]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public string Currency { get; set; }
+
         [Required]
         [StringLength(50)]
         public string Name { get; set; }

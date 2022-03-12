@@ -14,7 +14,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model
         [DisplayName("Kategorie")]
         public string Category { get; set; }
         [DisplayName("Vorjahresdifferenz")]
-        public decimal YOY { get; set; }
+        public decimal? YOY { get; set; }
         [DisplayName("Q1 vor 3 Jahren")]
         public decimal? Q1_Y3 { get; set; }
         [DisplayName("Q1 vor 2 Jahren")]

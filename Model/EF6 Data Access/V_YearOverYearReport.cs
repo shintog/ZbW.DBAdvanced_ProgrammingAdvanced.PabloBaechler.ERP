@@ -12,7 +12,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Ac
         [Key]
         [Required]
         public string Category { get; set; }
-        public decimal YOY { get; set; }
+        public decimal? YOY { get; set; }
         public decimal? Q1_Y3 { get; set; }
         public decimal? Q1_Y2 { get; set; }
         public decimal? Q1_Y1 { get; set; }

@@ -23,7 +23,29 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <DataGrid x:Name="DataGridYearOverYear" Grid.Column="1" HorizontalAlignment="Left" Height="450" VerticalAlignment="Top" Width="590" IsReadOnly="True"/>
+        <DataGrid x:Name="DataGridYearOverYear" Grid.Column="1" HorizontalAlignment="Left" Height="139" VerticalAlignment="Top" Width="590" IsReadOnly="True" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Category}" Header="Kategorie"/>
+                <DataGridTextColumn Binding="{Binding YOY}" Header="Jahresvergleich"/>
+                <DataGridTextColumn Binding="{Binding Q1_Y3}" Header="Q1 vor 3 Jahren"/>
+                <DataGridTextColumn Binding="{Binding Q1_Y2}" Header="Q1 vor 2 Jahren"/>
+                <DataGridTextColumn Binding="{Binding Q1_Y1}" Header="Q1 vor einem Jahr"/>
+                <DataGridTextColumn Binding="{Binding Q1_Y0}" Header="Q1 aktuelles Jahr"/>
+                <DataGridTextColumn Binding="{Binding Q2_Y3}" Header="Q2 vor 3 Jahren"/>
+                <DataGridTextColumn Binding="{Binding Q2_Y2}" Header="Q2 vor 2 Jahren"/>
+                <DataGridTextColumn Binding="{Binding Q2_Y1}" Header="Q2 vor einem Jahr"/>
+                <DataGridTextColumn Binding="{Binding Q2_Y0}" Header="Q2 aktuelles Jahr"/>
+                <DataGridTextColumn Binding="{Binding Q3_Y3}" Header="Q3 vor 3 Jahren"/>
+                <DataGridTextColumn Binding="{Binding Q3_Y2}" Header="Q3 vor 2 Jahren"/>
+                <DataGridTextColumn Binding="{Binding Q3_Y1}" Header="Q3 vor einem Jahr"/>
+                <DataGridTextColumn Binding="{Binding Q3_Y0}" Header="Q3 aktuelles Jahr"/>
+                <DataGridTextColumn Binding="{Binding Q4_Y3}" Header="Q4 vor 3 Jahren"/>
+                <DataGridTextColumn Binding="{Binding Q4_Y2}" Header="Q4 vor 2 Jahren"/>
+                <DataGridTextColumn Binding="{Binding Q4_Y1}" Header="Q4 vor einem Jahr"/>
+                <DataGridTextColumn Binding="{Binding Q4_Y0}" Header="Q4 aktuelles Jahr"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Image Grid.Column="1" HorizontalAlignment="Left" Height="311" Width="590" Source="logo-zbw.png" Margin="0,139,0,0"/>
 
     </Grid>
 </Page>

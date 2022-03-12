@@ -154,7 +154,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         
         public void SaveData()
         {
-            if ((_errorList == null || _errorList.Where(a => a.Key.StartsWith(AddressData.AddressNr.ToString().Substring(2))).ToList().Count == 0))
+            if (_errorList == null || _errorList.Where(a => a.Key.StartsWith(AddressNr.ToString())).ToList().Count == 0)
             {
                 if (AddressNr == "CU0")
                 {
@@ -304,7 +304,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
 
         public String CurrentError
         {
-            get { return _errorList.Count > 0 ? _errorList.FirstOrDefault(e => e.Key.StartsWith(AddressNr.ToString().Substring(2))).Value : ""; }
+            get { return _errorList.Count > 0 ? _errorList.FirstOrDefault(e => e.Key.StartsWith(AddressNr.ToString())).Value : ""; }
         }
 
         public Visibility Error
