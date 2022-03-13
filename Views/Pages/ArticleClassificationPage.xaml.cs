@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Support;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels;
 
@@ -38,7 +28,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
             //Parent-Objects setzen
             BindToElement("ParentClassification", BindingMode.OneWay, cmbParent, ComboBox.ItemsSourceProperty);
             //Parent ->  Selektierter Wert zurückgeben
-            BindToElement("ParentSelectedItem", BindingMode.TwoWay, cmbParent, ComboBox.SelectedItemProperty);;
+            BindToElement("ParentSelectedItem", BindingMode.TwoWay, cmbParent, ComboBox.SelectedItemProperty); ;
             //Parent-Value setzen
             BindToElement("ParentValue", BindingMode.TwoWay, txtParent, TextBox.TextProperty);
             //Parent-Value setzen

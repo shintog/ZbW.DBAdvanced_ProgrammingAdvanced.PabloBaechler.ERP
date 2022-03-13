@@ -1,12 +1,9 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Utilities.Internal;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using Microsoft.VisualStudio.Utilities.Internal;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
 
@@ -33,7 +30,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         private ArticleClassificationData _classificationData;
         private ArticleClassificationData ClassificationData
         {
-            get { return _classificationData; } 
+            get { return _classificationData; }
             set
             {
                 _classificationData = value;
@@ -46,8 +43,8 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(ParentValue));
             }
         }
-        
-        
+
+
         private SearchPage _currentSearchMask;
         public SearchPage CurrentSearchMask
         {
@@ -87,7 +84,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 return ListDictionary;
             }
         }
-        
+
         public KeyValuePair<int, String> ParentSelectedItem
         {
             get
@@ -107,7 +104,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(ParentSelectedItem));
             }
         }
-        
+
         private String _parentValue;
         public String ParentValue
         {
@@ -118,7 +115,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(ParentValue));
             }
         }
-        
+
         public String Name
         {
             get { return ClassificationData.Name; }
@@ -126,10 +123,10 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 ClassificationData.Name = value;
 
-                ErrorList.Remove(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) );
+                ErrorList.Remove(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name));
                 if (value == "")
                 {
-                    ErrorList.Add(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) , Parent.ListOfErrors[nameof(Parent.ArticleClassificationViewModel) + "." + nameof(Parent.ArticleClassificationViewModel.Name)]);
+                    ErrorList.Add(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name), Parent.ListOfErrors[nameof(Parent.ArticleClassificationViewModel) + "." + nameof(Parent.ArticleClassificationViewModel.Name)]);
                 }
                 NotifyPropertyChanged(nameof(CurrentError));
                 NotifyPropertyChanged(nameof(Error));
@@ -162,7 +159,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                         .ToDictionary(a => a.ClassificationNr, a => a.Name);
                 else
                     dataDictionary = DataModel.ArticleClassifications.ToDictionary(a => a.ClassificationNr, a => a.Name);
-                
+
                 return dataDictionary;
             }
         }
@@ -215,7 +212,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         {
             get { return _errorList.Count > 0 ? Visibility.Visible : Visibility.Hidden; }
         }
-        
+
         public void SaveData()
         {
             if ((_errorList == null || _errorList.Where(a => a.Key.StartsWith(ClassificationData.ClassificationNr.ToString())).ToList().Count == 0))
@@ -227,7 +224,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 }
 
                 ClassificationData.Parent = ClassificationData.Parent == 0 ? null : ClassificationData.Parent;
-                
+
                 DataModel.WriteData(ClassificationData);
                 Parent.DataModel = DataModel;
                 SetEdit = false;
@@ -236,7 +233,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                     ClassificationData.Name);
             }
         }
-        
+
         public void DeleteData()
         {
             if (DataModel.ArticleClassifications.Select(a => a.ClassificationNr).Contains(ClassificationData.ClassificationNr))
@@ -246,9 +243,9 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 if (DeleteError.Key != "")
                     ErrorList.Add(DeleteError.Key, DeleteError.Value);
                 else
-                    SetNew = true;
+                    SetNew();
 
-                ErrorList.Remove(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) );
+                ErrorList.Remove(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name));
                 NotifyPropertyChanged(nameof(CurrentError));
                 NotifyPropertyChanged(nameof(Error));
 
@@ -257,23 +254,15 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             }
         }
 
-        private bool _setNew;
-        public bool SetNew
+        public void SetNew()
         {
-            get { return _setNew; }
-            set
-            {
-                if (value)
-                {
-                    ClassificationData = new ArticleClassificationData();
-                    ParentSelectedItem = new KeyValuePair<int, string>();
+            ClassificationData = new ArticleClassificationData();
+            ParentSelectedItem = new KeyValuePair<int, string>();
 
-                    ErrorList = new Dictionary<string, string>();
-                    ErrorList.Add(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name) , Parent.ListOfErrors[nameof(Parent.ArticleClassificationViewModel) + "." + nameof(Parent.ArticleClassificationViewModel.Name)]);
-                    NotifyPropertyChanged(nameof(CurrentError));
-                    NotifyPropertyChanged(nameof(Error));
-                }
-            }
+            ErrorList = new Dictionary<string, string>();
+            ErrorList.Add(Parent.ArticleClassificationViewModel.ClassificationNr + "." + nameof(Parent.ArticleClassificationViewModel.Name), Parent.ListOfErrors[nameof(Parent.ArticleClassificationViewModel) + "." + nameof(Parent.ArticleClassificationViewModel.Name)]);
+            NotifyPropertyChanged(nameof(CurrentError));
+            NotifyPropertyChanged(nameof(Error));
         }
 
         private bool _setEdit;

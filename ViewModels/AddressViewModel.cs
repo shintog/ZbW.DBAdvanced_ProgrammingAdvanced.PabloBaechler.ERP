@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Windows;
-using Microsoft.VisualStudio.Utilities.Internal;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
 
@@ -27,7 +25,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         public MainViewModel Parent;
 
         public AuftragsverwaltungModel DataModel;
-        
+
         private AddressData _addressData;
         private AddressData AddressData
         {
@@ -59,19 +57,19 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         public Boolean ResetSearchMask
         {
             get { return false; }
-            set { if(value == true) CurrentSearchMask = new SearchPage(); }
+            set { if (value == true) CurrentSearchMask = new SearchPage(); }
         }
-        
+
         public string AddressNr
         {
             get { return AddressData.AddressKey + AddressData.AddressNr; }
             set
             {
-                AddressData.AddressKey = value.Substring(0,2);
+                AddressData.AddressKey = value.Substring(0, 2);
                 NotifyPropertyChanged(nameof(AddressNr));
             }
         }
-        
+
         public String Street
         {
             get { return AddressData.Street; }
@@ -79,10 +77,10 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 AddressData.Street = value;
 
-                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Street) );
+                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Street));
                 if (value == "")
                 {
-                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Street) , Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.Street)]);
+                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Street), Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.Street)]);
                 }
 
                 NotifyPropertyChanged(nameof(CurrentError));
@@ -91,18 +89,18 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(Street));
             }
         }
-        
+
         public String Number
         {
             get { return AddressData.Number; }
             set
             {
                 AddressData.Number = value;
-                
-                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Number) );
+
+                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Number));
                 if (value == "")
                 {
-                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Number) , Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.Number)]);
+                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Number), Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.Number)]);
                 }
 
                 NotifyPropertyChanged(nameof(CurrentError));
@@ -111,18 +109,18 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(Number));
             }
         }
-        
+
         public Decimal ZIP
         {
             get { return AddressData.ZIP; }
             set
             {
                 AddressData.ZIP = value;
-                
-                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.ZIP) );
+
+                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.ZIP));
                 if (value == 0)
                 {
-                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.ZIP) , Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.ZIP)]);
+                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.ZIP), Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.ZIP)]);
                 }
 
                 NotifyPropertyChanged(nameof(CurrentError));
@@ -131,18 +129,18 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(ZIP));
             }
         }
-        
+
         public String City
         {
             get { return AddressData.City; }
             set
             {
                 AddressData.City = value;
-                
-                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.City) );
+
+                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.City));
                 if (value == "")
                 {
-                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.City) , Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.City)]);
+                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.City), Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.City)]);
                 }
 
                 NotifyPropertyChanged(nameof(CurrentError));
@@ -151,7 +149,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(City));
             }
         }
-        
+
         public void SaveData()
         {
             if (_errorList == null || _errorList.Where(a => a.Key.StartsWith(AddressNr.ToString())).ToList().Count == 0)
@@ -161,7 +159,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                     int newKey = DataModel.Addresses.Select(a => a.AddressNr).DefaultIfEmpty(0).Max();
                     AddressData.AddressNr = newKey == 0 ? 1000000 : newKey + 1;
                 }
-                
+
                 DataModel.WriteData(AddressData);
                 Parent.DataModel = DataModel;
                 SetEdit = false;
@@ -170,7 +168,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                     AddressData.Street + " " + AddressData.Number + ", " + AddressData.City + " " + AddressData.ZIP);
             }
         }
-        
+
         public void DeleteData()
         {
             if (DataModel.Addresses.Select(a => a.AddressNr).Contains(AddressData.AddressNr))
@@ -181,12 +179,12 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 if (DeleteError.Key != "")
                     ErrorList.Add(DeleteError.Key, DeleteError.Value);
                 else
-                    SetNew = true;
+                    SetNew();
 
-                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Street) );
-                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Number) );
-                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.ZIP) );
-                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.City) );
+                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Street));
+                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Number));
+                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.ZIP));
+                ErrorList.Remove(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.City));
 
                 NotifyPropertyChanged(nameof(CurrentError));
                 NotifyPropertyChanged(nameof(Error));
@@ -196,26 +194,18 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             }
         }
 
-        private Boolean _setNew;
-        public Boolean SetNew
+        public void SetNew()
         {
-            get { return _setNew; }
-            set
-            {
-                if (value)
-                {
-                    AddressData = new AddressData();
-                    AddressData.AddressKey = "CU";
-                    ErrorList = new Dictionary<string, string>();
-                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Street) , Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.Street)]);
-                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Number) , Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.Number)]);
-                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.ZIP) , Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.ZIP)]);
-                    ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.City) , Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.City)]);
+            AddressData = new AddressData();
+            AddressData.AddressKey = "CU";
+            ErrorList = new Dictionary<string, string>();
+            ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Street), Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.Street)]);
+            ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.Number), Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.Number)]);
+            ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.ZIP), Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.ZIP)]);
+            ErrorList.Add(Parent.AddressViewModel.AddressNr + "." + nameof(Parent.AddressViewModel.City), Parent.ListOfErrors[nameof(Parent.AddressViewModel) + "." + nameof(Parent.AddressViewModel.City)]);
 
-                    NotifyPropertyChanged(nameof(CurrentError));
-                    NotifyPropertyChanged(nameof(Error));
-                }
-            }
+            NotifyPropertyChanged(nameof(CurrentError));
+            NotifyPropertyChanged(nameof(Error));
         }
 
         private Boolean _setEdit;
@@ -254,8 +244,8 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 else
                     dataDictionary = DataModel.Addresses.ToDictionary(a => a.AddressKey + a.AddressNr,
                         a => a.Street + " " + a.Number + ", " + a.City + " " + a.ZIP);
-                
-                return dataDictionary; 
+
+                return dataDictionary;
             }
             set
             {
@@ -322,6 +312,6 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 PropertyChanged(this, new PropertyChangedEventArgs(info));
             }
         }
-        
+
     }
 }

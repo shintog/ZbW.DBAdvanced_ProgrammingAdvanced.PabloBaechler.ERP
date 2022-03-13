@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Access;
 
 namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model
@@ -248,7 +245,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model
                 Record.SysEndTime = VARIABLE.SysEndTime;
                 _position_History.Add(Record);
             }
-            
+
             foreach (var VARIABLE in DataAccess.V_Classification_Hierarchy)
             {
                 V_CTE_ArticleClassificationHierarchyData Record = new V_CTE_ArticleClassificationHierarchyData();
@@ -363,7 +360,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model
                 Record.Date = Data.Date;
                 Record.OrderNr = Data.OrderNr;
                 DataAccess.Orders.AddOrUpdate(Record);
-                
+
                 foreach (var VARIABLE in Record.Positions)
                 {
                     if (!Data.Positions.Select(p => p.PositionNr).Contains(VARIABLE.PositionNr))
@@ -423,7 +420,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model
                     DataAccess.Customers.Remove(DataAccess.Customers.First(o => o.CustomerNr == Data.CustomerNr));
                 else
                     errorMsg = new KeyValuePair<String, String>(Data.CustomerNr.ToString(), ListOfErrors[nameof(CustomerData) + nameof(DeleteData)]);
-        }
+            }
 
             if (dataObject.GetType() == typeof(OrderData))
             {
@@ -448,7 +445,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model
 
         private bool HasClassificationDependencies(int ClassificationNr)
         {
-            return DataAccess.Articles.Where(a => a.Classification == ClassificationNr).ToList().Count > 0 || 
+            return DataAccess.Articles.Where(a => a.Classification == ClassificationNr).ToList().Count > 0 ||
                    DataAccess.ArticleClassifications.Where(a => a.Parent == ClassificationNr).ToList().Count > 0;
         }
 
@@ -461,7 +458,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model
         {
             return DataAccess.Orders.Where(o => o.CustomerNr == CustomerNr).ToList().Count > 0;
         }
-        
+
 
         private List<AccountingData> _accountings;
 

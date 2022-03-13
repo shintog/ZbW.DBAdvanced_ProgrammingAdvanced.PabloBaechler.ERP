@@ -1,16 +1,10 @@
-﻿using Microsoft.VisualStudio.PlatformUI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model;
-using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Access;
-using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Support;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
 
 namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
@@ -26,7 +20,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         {
             if (DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
                 return;
-            
+
             this.ApplicationViewModel = new ApplicationViewModel();
             this.CustomerViewModel = new CustomerViewModel();
             this.AddressViewModel = new AddressViewModel();
@@ -49,7 +43,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
 
             this.CurrentApplications = new Dictionary<string, string>();
             this.ApplicationList = new Dictionary<string, Page>();
-            
+
         }
 
         private AuftragsverwaltungModel _dataModel;
@@ -218,7 +212,6 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         }
 
         private KeyValuePair<String, String> _selectedItem;
-
         public KeyValuePair<String, String> SelectedItem
         {
             get { return _selectedItem; }
@@ -226,6 +219,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 if (value.Key != null)
                 {
+                    _selectedItem = value;
                     CurrentWindow = ApplicationList[value.Key];
                     NotifyPropertyChanged(nameof(SelectedItem));
                 }
@@ -247,36 +241,36 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             set { _historyVisibility = value; }
         }
 
-        public void SetNew() 
+        public void SetNew()
         {
             Type WindowType = CurrentWindow.GetType();
             if (WindowType == typeof(AddressPage))
             {
-                AddressViewModel.SetNew = true;
+                AddressViewModel.SetNew();
                 AddressViewModel.SetEdit = true;
             }
 
             if (WindowType == typeof(ArticleClassificationPage))
             {
-                ArticleClassificationViewModel.SetNew = true;
+                ArticleClassificationViewModel.SetNew();
                 ArticleClassificationViewModel.SetEdit = true;
             }
 
             if (WindowType == typeof(ArticlePage))
             {
-                ArticleViewModel.SetNew = true;
+                ArticleViewModel.SetNew();
                 ArticleViewModel.SetEdit = true;
             }
 
             if (WindowType == typeof(CustomerPage))
             {
-                CustomerViewModel.SetNew = true;
+                CustomerViewModel.SetNew();
                 CustomerViewModel.SetEdit = true;
             }
 
             if (WindowType == typeof(OrderPage))
             {
-                OrderViewModel.SetNew = true;
+                OrderViewModel.SetNew();
                 OrderViewModel.SetEdit = true;
             }
         }
@@ -318,9 +312,9 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
 
             if (WindowType == typeof(CustomerPage))
             {
-                if(((CustomerPage)CurrentWindow).pwbPassword.Password != "" && ((CustomerPage)CurrentWindow).pwbPassword.Password == ((CustomerPage)CurrentWindow).pwbPasswordSec.Password)
+                if (((CustomerPage)CurrentWindow).pwbPassword.Password != "" && ((CustomerPage)CurrentWindow).pwbPassword.Password == ((CustomerPage)CurrentWindow).pwbPasswordSec.Password)
                     CustomerViewModel.SavePassword(((CustomerPage)CurrentWindow).pwbPassword.Password);
-              
+
                 CustomerViewModel.SaveData();
             }
 
@@ -364,13 +358,13 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         }
 
         public void DoAbort()
-        {   
+        {
             CurrentWindow = new ApplicationPage();
         }
 
         private Page _behindHistory;
         public void ShowHistory()
-        {   
+        {
             Type WindowType = CurrentWindow.GetType();
             if (WindowType == typeof(HistoryPage))
             {
@@ -467,7 +461,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 return _clickSaveCommand;
             }
             set
-            { 
+            {
                 _clickSaveCommand = value;
             }
         }
@@ -475,7 +469,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         private ICommand _clickDeleteCommand;
         public ICommand ClickDeleteCommand
         {
-            get 
+            get
             {
                 if (_clickDeleteCommand == null)
                     _clickDeleteCommand = new Delete();
@@ -483,7 +477,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             }
             set
             {
-                 _clickDeleteCommand = value;
+                _clickDeleteCommand = value;
             }
         }
 
@@ -564,7 +558,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         }
 
         public void Execute(object parameter)
-         {
+        {
             ((MainViewModel)parameter).SetEdit();
 
         }
