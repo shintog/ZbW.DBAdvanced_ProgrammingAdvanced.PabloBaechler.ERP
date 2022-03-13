@@ -48,6 +48,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(SalesPrice));
                 NotifyPropertyChanged(nameof(SPCurrencySelectedItem));
                 NotifyPropertyChanged(nameof(HistoryList));
+                NotifyPropertyChanged(nameof(ClassificationValue));
             }
         }
 

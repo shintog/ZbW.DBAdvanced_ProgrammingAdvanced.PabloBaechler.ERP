@@ -44,6 +44,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(EMail));
                 NotifyPropertyChanged(nameof(Website));
                 NotifyPropertyChanged(nameof(HistoryList));
+                NotifyPropertyChanged(nameof(AddressValue));
             }
         }
 

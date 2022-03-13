@@ -38,12 +38,12 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             {
                 _classificationData = value;
                 NotifyPropertyChanged(nameof(ClassificationNr));
-                NotifyPropertyChanged(nameof(ParentClassification));
-                NotifyPropertyChanged(nameof(ParentSelectedItem));
                 NotifyPropertyChanged(nameof(Name));
                 NotifyPropertyChanged(nameof(HistoryList));
                 NotifyPropertyChanged(nameof(HierarchyTree));
                 NotifyPropertyChanged(nameof(ParentClassification));
+                NotifyPropertyChanged(nameof(ParentSelectedItem));
+                NotifyPropertyChanged(nameof(ParentValue));
             }
         }
         

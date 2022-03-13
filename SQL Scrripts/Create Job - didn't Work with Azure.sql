@@ -11,7 +11,7 @@ EXEC sp_add_jobstep
 GO  
 EXEC dbo.sp_add_schedule  
     @schedule_name = N'RunOnce',  
-    @freq_type = 4,  
+    @freq_type = 16,  
     @active_start_time = 233000 ;  
 USE msdb ;  
 GO  

@@ -45,6 +45,7 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
                 NotifyPropertyChanged(nameof(CustomerSelectedItem));
                 NotifyPropertyChanged(nameof(Positions));
                 NotifyPropertyChanged(nameof(HistoryList));
+                NotifyPropertyChanged(nameof(CustomerValue));
             }
         }
 
