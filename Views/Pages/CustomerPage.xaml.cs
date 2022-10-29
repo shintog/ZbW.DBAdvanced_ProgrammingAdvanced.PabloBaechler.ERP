@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -59,11 +60,54 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (pwbPassword.Password != "" && pwbPassword.Password == pwbPasswordSec.Password)
+            if (pwbPassword.Password != "" && pwbPassword.Password == pwbPasswordSec.Password &&
+                Regex.Match(pwbPassword.Password, "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$").Success)
                 imgPasswordCheck.Source = new BitmapImage(new Uri(@"/Resources/Icons/Checked.png", UriKind.Relative));
             else
                 imgPasswordCheck.Source = new BitmapImage(new Uri(@"/Resources/Icons/Unchecked.png", UriKind.Relative));
         }
 
+        private void txtCustNrFree_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (Regex.Match(txtCustNrFree.Text, "^CU[1-9]{5}$").Success)
+            {
+                imgCustomerNrCheck.Source = new BitmapImage(new Uri(@"/Resources/Icons/Checked.png", UriKind.Relative));
+                lblCustomerNrWrong.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                imgCustomerNrCheck.Source = new BitmapImage(new Uri(@"/Resources/Icons/Unchecked.png", UriKind.Relative));
+                lblCustomerNrWrong.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void txtEMail_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (Regex.Match(txtEMail.Text, "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])").Success)
+            {
+                imgEmailCheck.Source = new BitmapImage(new Uri(@"/Resources/Icons/Checked.png", UriKind.Relative));
+                lblEmailWrong.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                imgEmailCheck.Source = new BitmapImage(new Uri(@"/Resources/Icons/Unchecked.png", UriKind.Relative));
+                lblEmailWrong.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void txtWebsite_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (Regex.Match(txtWebsite.Text, "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)$").Success ||
+                Regex.Match(txtWebsite.Text, "^[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)$").Success)
+            {
+                imgWebsiteCheck.Source = new BitmapImage(new Uri(@"/Resources/Icons/Checked.png", UriKind.Relative));
+                lblWebsiteWrong.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                imgWebsiteCheck.Source = new BitmapImage(new Uri(@"/Resources/Icons/Unchecked.png", UriKind.Relative));
+                lblWebsiteWrong.Visibility = Visibility.Visible;
+            }
+        }
     }
 }

@@ -47,5 +47,6 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views
             Binding bindingItem = SupportingTools.GenerateBinding(DataContext, path, mode, element, property, StringFormat);
             BindingOperations.SetBinding(element, property, bindingItem);
         }
+
     }
 }

@@ -1,0 +1,39 @@
+﻿<Window x:Name="ImExport" x:Class="ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views"
+        mc:Ignorable="d"
+        Title="Im/Export" Height="450" Width="800" WindowStyle="SingleBorderWindow">
+    <Grid>
+        <Grid HorizontalAlignment="Center" Height="289" VerticalAlignment="Top" Width="800">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="25"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
+
+            <Label x:Name="lblType" Content="Format:" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Width="80"/>
+            <ComboBox x:Name="cmbType" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="1" VerticalAlignment="Top" Width="120" IsSynchronizedWithCurrentItem="True" BorderBrush="{x:Null}" Background="{x:Null}"  SelectedValuePath="Key" DisplayMemberPath="Value"/>
+
+            <Label x:Name="lblPath" Content="Datei:" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" Width="80"/>
+            <TextBox x:Name="txtPath" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="3" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsEnabled="False"/>
+            <Button x:Name="cmbFileexplorer" Grid.Column="5" Content="..." HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" Width="25" Height="25" VerticalContentAlignment="Center"/>
+
+            <Button x:Name="cmdExecute" Grid.Column="1" Content="Ausführaen" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Top" Width="80" Height="25" VerticalContentAlignment="Center"/>
+            <Button x:Name="cmbAbort" Grid.Column="3" Content="Abbrechen" HorizontalAlignment="Right" Grid.Row="5" VerticalAlignment="Top" Width="80" Height="25" VerticalContentAlignment="Center"/>
+        </Grid>
+    </Grid>
+</Window>

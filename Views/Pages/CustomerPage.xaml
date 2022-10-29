@@ -41,7 +41,10 @@
 
         <Label x:Name="lblCustNR" Content="Kunden-Nr.:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" Width="80"/>
         <TextBox x:Name="txtCustNr" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="3" TextWrapping="Wrap" Text="*Neu*" IsEnabled="False" VerticalAlignment="Top" Width="120"/>
-
+        <TextBox x:Name="txtCustNrFree" Grid.Column="6" HorizontalAlignment="Left" Height="25" Grid.Row="3" TextWrapping="Wrap" IsEnabled="True" VerticalAlignment="Top" Width="120" TextChanged="txtCustNrFree_TextChanged"/>
+        <Image x:Name="imgCustomerNrCheck" Grid.Column="7" Grid.Row="3" Source="Unchecked.png" RenderTransformOrigin="1.648,0.711"/>
+        <Label x:Name="lblCustomerNrWrong" Content="Format: CU12345" Grid.Column="8" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" Width="140" Visibility="Hidden"/>
+        
         <Label x:Name="lblName" Content="Name:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Top" Width="80"/>
         <TextBox x:Name="txtName" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="5" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
 
@@ -50,10 +53,14 @@
         <TextBox x:Name="txtAddress" Grid.Column="5" Grid.ColumnSpan="41" BorderThickness="0" HorizontalAlignment="Left" Height="25" Grid.Row="7" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="372" IsReadOnly="True" BorderBrush="{x:Null}" IsManipulationEnabled="True"/>
 
         <Label x:Name="lblEMail" Content="E-Mail:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="9" VerticalAlignment="Top" Width="80"/>
-        <TextBox x:Name="txtEMail" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="9" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtEMail" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="9" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" TextChanged="txtEMail_TextChanged"/>
+        <Image x:Name="imgEmailCheck" Grid.Column="5" Grid.Row="9" Source="Unchecked.png" RenderTransformOrigin="1.648,0.711" HorizontalAlignment="Left"/>
+        <Label x:Name="lblEmailWrong" Content="Geben Sie eine gültige E-Mail Adresse an" Grid.Column="6" HorizontalAlignment="Left" Grid.Row="9" Grid.ColumnSpan="41" VerticalAlignment="Top" Width="250" Visibility="Hidden"/>
 
         <Label x:Name="lblWebsite" Content="Website:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="11" VerticalAlignment="Top" Width="80"/>
-        <TextBox x:Name="txtWebsite" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="11" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtWebsite" Grid.Column="3" HorizontalAlignment="Left" Height="25" Grid.Row="11" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" TextChanged="txtWebsite_TextChanged"/>
+        <Image x:Name="imgWebsiteCheck" Grid.Column="5" Grid.Row="11" Source="Unchecked.png" RenderTransformOrigin="1.648,0.711" HorizontalAlignment="Left"/>
+        <Label x:Name="lblWebsiteWrong" Content="Geben Sie eine gültige URL an" Grid.Column="6" HorizontalAlignment="Left" Grid.Row="11" Grid.ColumnSpan="41" VerticalAlignment="Top" Width="200" Visibility="Hidden"/>
 
         <Label x:Name="lblPassword" Content="Passwort:" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="13" VerticalAlignment="Top" Width="80"/>
         <PasswordBox x:Name="pwbPassword" Grid.Column="3" HorizontalAlignment="Left" Grid.Row="13" VerticalAlignment="Top" Height="25" Width="120" PasswordChanged="PasswordBox_PasswordChanged"/>
@@ -61,5 +68,13 @@
         <PasswordBox x:Name="pwbPasswordSec" Grid.Column="6" HorizontalAlignment="Left" Grid.Row="13" VerticalAlignment="Top" Height="25" Width="120" PasswordChanged="PasswordBox_PasswordChanged"/>
         <Image x:Name="imgPasswordCheck" Grid.Column="7" Grid.Row="13" Source="Unchecked.png" RenderTransformOrigin="1.648,0.711"/>
         <Label x:Name="lblError" Content="" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="7" Width="585" Foreground="#FFB92323" Visibility="Hidden"/>
+        <Label x:Name="lblPasswordPolicy" Grid.Column="3" HorizontalAlignment="Left" Grid.Row="15"  Grid.ColumnSpan="41" VerticalAlignment="Top" Width="350" Visibility="Visible">
+            <TextBlock>
+                • Min. 8 Zeichen<LineBreak/>
+                • Zwingend einen Gross- sowie einen Kleinbuchstaben<LineBreak/>
+                • Zwingend eine Zahl<LineBreak/>
+                • Zwingend ein Sonderzeichen (#?!@$%^&amp;*-)
+            </TextBlock>
+        </Label>
     </Grid>
 </Page>

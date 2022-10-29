@@ -357,6 +357,16 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             }
         }
 
+        public void OpenImport()
+        {
+
+        }
+
+        public void OpenExport()
+        {
+
+        }
+
         public void DoAbort()
         {
             CurrentWindow = new ApplicationPage();
