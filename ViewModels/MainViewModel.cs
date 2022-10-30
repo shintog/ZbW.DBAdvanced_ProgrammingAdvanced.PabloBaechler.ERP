@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model;
+using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
 
 namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
@@ -357,14 +359,59 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             }
         }
 
-        public void OpenImport()
+        public void DoImport()
         {
+            Type WindowType = CurrentWindow.GetType();
+            // Für erweiterung auf mehrere Quellen
+            if (WindowType == typeof(CustomerPage))
+            {
+                var Window = new ImExport();
+                Window.Show(false);
 
+                while (!Window.Execute && Window.Visibility == Visibility.Visible)
+                {
+                    Thread.Sleep(10);
+                }
+
+                if (Window.Execute)
+                {
+                    string Type = Window.cmbType.SelectedValue.ToString();
+                    string Path = Window.txtPath.Text;
+                    DateTime Moment = DateTime.Parse(Window.dtpDate.Text);
+                    Window.Close();
+
+
+                    if (WindowType == typeof(CustomerPage))
+                        CustomerViewModel.ImportData(Type == "json", Path);
+                }
+            }            
         }
 
-        public void OpenExport()
+        public void DoExport()
         {
+            Type WindowType = CurrentWindow.GetType();
+            if (WindowType == typeof(CustomerPage))
+            {
+                var Window = new ImExport();
+                Window.Show(true);
 
+                while (!Window.Execute && Window.Visibility == Visibility.Visible)
+                {
+                    Thread.Sleep(10);
+                }
+
+                if (Window.Execute)
+                {
+                    string Type = Window.cmbType.SelectedValue.ToString();
+                    string Path = Window.txtPath.Text;
+                    DateTime Moment = DateTime.Parse(Window.dtpDate.Text);
+                    Window.Close();
+
+                    if (WindowType == typeof(CustomerPage))
+                        CustomerViewModel.ExportData(Type == "json", Path, Moment);
+
+                }
+            }
         }
 
         public void DoAbort()
@@ -491,6 +538,36 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             }
         }
 
+        private ICommand _clickImportCommand;
+        public ICommand ClickImportCommand
+        {
+            get
+            {
+                if (_clickImportCommand == null)
+                    ClickImportCommand = new Import();
+                return _clickImportCommand;
+            }
+            set
+            {
+                _clickImportCommand = value;
+            }
+        }
+
+        private ICommand _clickExportCommand;
+        public ICommand ClickExportCommand
+        {
+            get
+            {
+                if (_clickExportCommand == null)
+                    ClickExportCommand = new Export();
+                return _clickExportCommand;
+            }
+            set
+            {
+                _clickExportCommand = value;
+            }
+        }
+
         private ICommand _clickAbortCommand;
         public ICommand ClickAbortCommand
         {
@@ -612,6 +689,48 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
         public void Execute(object parameter)
         {
             ((MainViewModel)parameter).DoDelete();
+
+        }
+        #endregion
+    }
+    class Import : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            ((MainViewModel)parameter).DoImport();
+
+        }
+        #endregion
+    }
+    class Export : ICommand
+    {
+        #region ICommand Members  
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            ((MainViewModel)parameter).DoExport();
 
         }
         #endregion

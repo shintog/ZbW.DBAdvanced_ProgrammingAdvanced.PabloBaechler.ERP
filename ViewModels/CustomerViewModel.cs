@@ -1,9 +1,12 @@
 ﻿using Microsoft.VisualStudio.Utilities.Internal;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Xml.Serialization;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
 
@@ -307,6 +310,94 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
             ErrorList.Add(Parent.CustomerViewModel.CustomerNr + "." + nameof(Parent.CustomerViewModel.Website), Parent.ListOfErrors[nameof(Parent.CustomerViewModel) + "." + nameof(Parent.CustomerViewModel.Website)]);
             NotifyPropertyChanged(nameof(CurrentError));
             NotifyPropertyChanged(nameof(Error));
+        }
+
+
+        public void ImportData(bool isJSON, string path)
+        {
+
+            FileStream openStream = File.OpenRead(path);
+            List<CustomerData> dataList = DeserializeData(isJSON, openStream);
+
+            foreach(CustomerData customerData in dataList)
+            {
+                CustomerData = customerData;
+                SaveData();
+            }
+        }
+        public void ExportData(bool isJSON, string path, DateTime moment)
+        {
+            FileStream openStream = File.OpenWrite(path);
+            List<CustomerData> exportDataList = new List<CustomerData>();  
+            foreach(Customer_HistoryData data in DataModel.Customer_History)
+            {
+                if (moment >= data.SysStartTime && moment <= data.SysEndTime)
+                {
+                    CustomerData customerData = new CustomerData();
+                    customerData.AddressNr = data.AddressNr;
+                    customerData.Address = data.Address;
+                    customerData.Address1 = DataModel.Addresses.First(a => a.AddressNr == data.AddressNr);
+                    customerData.CustomerKey = data.CustomerKey;
+                    customerData.CustomerNr = data.CustomerNr;
+                    customerData.EMail = data.EMail;
+                    customerData.Name = data.Name;
+                    customerData.Website = data.Website;
+                    customerData.Password = data.Password;
+                    exportDataList.Add(customerData);
+                }
+            }
+            SerializeData(isJSON, openStream, exportDataList);
+        }
+
+        public void SerializeData(bool isJSON, Stream fileStream, List<CustomerData> data)
+        {
+            if (isJSON)
+            {
+                var serializer = new JsonSerializer();
+                using (var sw = new StreamWriter(fileStream))
+                {
+                    foreach(CustomerData customerData in data)
+                        serializer.Serialize(sw, customerData);
+                }
+                fileStream.Close();
+            }
+            else
+            {
+                XmlSerializer writer = new XmlSerializer(typeof(CustomerData));
+
+                writer.Serialize(fileStream, data);
+                fileStream.Close();
+            }
+        }
+        
+        private List<CustomerData> DeserializeData(bool isJSON, Stream fileStrean)
+        {
+            List<CustomerData> data = new List<CustomerData>();
+
+            if (isJSON)
+            {
+                var serializer = new JsonSerializer();
+                using (var sr = new StreamReader(fileStrean))
+                {
+                    data.Add((CustomerData)serializer.Deserialize(sr, typeof(CustomerData)));
+                }
+            }
+            else
+            {
+                var serializer = new XmlSerializer(typeof(CustomerData));
+                using (var sr = new StreamReader(fileStrean))
+                {
+                    data.Add((CustomerData)serializer.Deserialize(sr));
+                }
+            }
+
+            return data;
+        }
+        
+        private bool IsWellFormed(bool isJSON, string FormastedString)
+        {
+
+            return true;
         }
 
         private bool _setEdit;

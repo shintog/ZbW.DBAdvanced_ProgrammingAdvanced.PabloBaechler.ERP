@@ -288,7 +288,6 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model
                 _v_YearOverYearReport.Add(Record);
             }
         }
-
         public void WriteData(Object dataObject)
         {
             if (dataObject.GetType() == typeof(AddressData))
@@ -555,6 +554,16 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model
             {
 
                 return _customers;
+            }
+        }
+
+        private List<CustomerData> _customers_History;
+        public List<CustomerData> Customers_History
+        {
+            get
+            {
+
+                return _customers_History;
             }
         }
 
