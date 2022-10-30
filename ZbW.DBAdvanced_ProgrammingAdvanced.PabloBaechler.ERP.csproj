@@ -259,6 +259,7 @@
     <Compile Include="Model\EF6 Data Access\Position_History.cs" />
     <Compile Include="Model\EF6 Data Access\V_CTE_ArticleClassificationHierarchy.cs" />
     <Compile Include="Model\EF6 Data Access\V_YearOverYearReport.cs" />
+    <Compile Include="Model\Interface\IRepository.cs" />
     <Compile Include="Model\OrderData.cs" />
     <Compile Include="Model\Order_HistoryData.cs" />
     <Compile Include="Model\PositionData.cs" />

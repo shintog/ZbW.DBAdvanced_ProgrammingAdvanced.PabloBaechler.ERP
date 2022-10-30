@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.EF6_Data_Access;
+using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.Interface;
 
 namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model
 {
-    public class AuftragsverwaltungModel
+    public class AuftragsverwaltungModel : IRepository
     {
         public AuftragsverwaltungModel()
         {

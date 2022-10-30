@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model;
+using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Model.Interface;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views;
 using ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.Views.Pages;
 
@@ -48,20 +49,20 @@ namespace ZbW.DBAdvanced_ProgrammingAdvanced.PabloBaechler.ERP.ViewModels
 
         }
 
-        private AuftragsverwaltungModel _dataModel;
-        public AuftragsverwaltungModel DataModel
+        private IRepository _dataModel;
+        public IRepository DataModel
         {
             get { return _dataModel; }
             set
             {
                 _dataModel = new AuftragsverwaltungModel();
-                CustomerViewModel.DataModel = _dataModel;
-                AddressViewModel.DataModel = _dataModel;
-                ArticleViewModel.DataModel = _dataModel;
-                ArticleClassificationViewModel.DataModel = _dataModel;
-                OrderViewModel.DataModel = _dataModel;
-                AccountingViewModel.DataModel = _dataModel;
-                ApplicationViewModel.DataModel = _dataModel;
+                CustomerViewModel.DataModel = (AuftragsverwaltungModel)_dataModel;
+                AddressViewModel.DataModel = (AuftragsverwaltungModel)_dataModel;
+                ArticleViewModel.DataModel = (AuftragsverwaltungModel)_dataModel;
+                ArticleClassificationViewModel.DataModel = (AuftragsverwaltungModel)_dataModel;
+                OrderViewModel.DataModel = (AuftragsverwaltungModel)_dataModel;
+                AccountingViewModel.DataModel = (AuftragsverwaltungModel)_dataModel;
+                ApplicationViewModel.DataModel = (AuftragsverwaltungModel)_dataModel;
 
             }
         }
